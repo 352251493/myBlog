@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="login">
+        <div class="am-modal am-modal-prompt" tabindex="-1" id="login-model">
+            <div class="am-modal-dialog">
+                <div class="am-modal-hd"><h1>登录</h1></div>
+                <div class="am-modal-bd">
+                    <br/>
+                    <form class="am-form am-form-horizontal">
+                        <div class="am-form-group">
+                            <label for="user-id" class="am-u-sm-2 am-form-label">账号</label>
+                            <div class="am-u-sm-10">
+                                <input type="text" id="user-id" placeholder="输入账号" maxlength="8">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="user-password" class="am-u-sm-2 am-form-label">密码</label>
+                            <div class="am-u-sm-10">
+                                <input type="password" id="user-password" placeholder="请输入密码" maxlength="15">
+                            </div>
+                        </div>
+                        <div class="am-form-group">
+                            <label for="user-verification-code" class="am-u-sm-2 am-form-label">验证码</label>
+                            <div class="am-u-sm-5">
+                                <input type="text" id="user-verification-code">
+                            </div>
+                            <img src='assets/img/loading.gif' class="am-u-sm-5" alt="验证码" id="check-code-img" onclick="changeCheckCode();">
+                        </div>
+                    </form>
+                    <br/>
+                </div>
+                <div class="am-modal-footer">
+                    <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                    <span class="am-modal-btn" data-am-modal-confirm>登录</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
