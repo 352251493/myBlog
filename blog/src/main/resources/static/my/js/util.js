@@ -68,10 +68,10 @@ function login() {
 
 function loginSuccess(data) {
     var result = JSON.parse(data);
-    openAlert(result.content);
     if (result.status.trim() == "true") {
         window.location.reload();
     } else {
+        openAlert(result.content);
         openLoginModel();
     }
 }

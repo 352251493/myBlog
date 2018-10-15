@@ -7,18 +7,18 @@ import com.gxg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 关于主页的Controller类
  * @author 郭欣光
- * @date 2018/10/12 12:17
+ * @date 2018/10/15 11:29
  */
 
 @Controller
-public class HomeController {
+@RequestMapping(value = "/life")
+public class LifeController {
 
     @Autowired
     private UserService userService;
@@ -26,9 +26,9 @@ public class HomeController {
     @Autowired
     private BlogService blogService;
 
-    @GetMapping("/")
-    public String home(Model model, HttpServletRequest request) {
-        model.addAttribute("pageName", "首页");
+    @RequestMapping(value = "")
+    public String life(Model model, HttpServletRequest request) {
+        model.addAttribute("pageName", "生活情感");
         User user = userService.getLoginUser(request);
         if (user != null) {
             model.addAttribute("user", user);
@@ -37,6 +37,6 @@ public class HomeController {
         if (blog != null) {
             model.addAttribute("blog", blog);
         }
-        return "/index.html";
+        return "/life.html";
     }
 }

@@ -3,8 +3,10 @@
 <body>
     <div th:fragment="header">
         <div class="am-u-sm-8 am-u-sm-centered">
-            <img width="200" src="assets/img/logo.png" alt="随遇而安。博客Logo"/>
-            <h2 class="am-hide-sm-only">随遇而安。的个人博客</h2>
+            <img width="200" src="/assets/img/logo.png" alt="随遇而安。博客Logo" th:if="${blog} == null or ${blog.logo} == null"/>
+            <img width="200" src="{blog.logo}" alt="随遇而安。博客Logo" th:if="${blog} != null and ${blog.logo} != null"/>
+            <h2 class="am-hide-sm-only" th:if="${blog} == null or ${blog.ownerName} == null">随遇而安。的个人博客</h2>
+            <h2 class="am-hide-sm-only" th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName} + '的个人博客'">随遇而安。的个人博客</h2>
         </div>
     </div>
 </body>
