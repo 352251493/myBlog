@@ -1,15 +1,24 @@
 package com.gxg.service.Impl;
 
 import com.gxg.dao.BlogDao;
+import com.gxg.dao.LabelDao;
+import com.gxg.dao.ShortWordsDao;
 import com.gxg.entities.Blog;
+import com.gxg.entities.Label;
+import com.gxg.entities.ShortWords;
 import com.gxg.service.BlogService;
 import com.gxg.utils.FileUtil;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Random;
 
 /**
  * 提供博客信息相关的逻辑处理
@@ -61,6 +70,18 @@ public class BlogServiceImpl implements BlogService {
     @Value("${blog.base.dir}")
     private String blogBaseDir;
 
+    @Autowired
+    private LabelDao labelDao;
+
+    @Value("${blog.label.count}")
+    private int blogLabelCount;
+
+    @Autowired
+    private ShortWordsDao shortWordsDao;
+
+    @Value("${blog,shortWords.count}")
+    private int blogShortWordsCount;
+
     /**
      * 获得博客相关信息
      * @param request 用户请求信息
@@ -69,9 +90,10 @@ public class BlogServiceImpl implements BlogService {
      */
     @Override
     public Blog getBlog(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+        ServletContext servletContext = request.getServletContext();
+//        HttpSession session = request.getSession();
         Blog blog = null;
-        if (session.getAttribute("blog") == null) {
+        if (servletContext.getAttribute("blog") == null) {
             if (blogDao.getBlogNumber() != 0) {
                 blog = blogDao.getBlog();
                 if (blog.getLogo() != null) {
@@ -188,11 +210,142 @@ public class BlogServiceImpl implements BlogService {
                         blog.setOwnerWeixinImg(null);
                     }
                 }
-                session.setAttribute("blog", blog);
+                servletContext.setAttribute("blog", blog);
             }
         } else {
-            blog = (Blog)session.getAttribute("blog");
+            blog = (Blog)servletContext.getAttribute("blog");
         }
         return blog;
+    }
+
+    /**
+     * 获得个人博客标签
+     *
+     * @param request 用户请求信息
+     * @return List<Label>个人博客标签
+     * @author 郭欣光
+     */
+    @Override
+    public List<Label> getLabel(HttpServletRequest request) {
+        ServletContext servletContext = request.getServletContext();
+        List<Label> labelList = null;
+        if (servletContext.getAttribute("label") == null) {
+            if (labelDao.getCount() != 0) {
+                labelList = labelDao.getLabelByLimitOrderByTime(0, blogLabelCount);
+                servletContext.setAttribute("label", labelList);
+            }
+        } else {
+            labelList = (List<Label>) servletContext.getAttribute("label");
+        }
+        return labelList;
+    }
+
+    /**
+     * 获取系统保存Label的最大个数
+     *
+     * @return 返回系统保存Label的最大个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getSaveLabelCount() {
+        return blogLabelCount;
+    }
+
+    /**
+     * 获得毒鸡汤信息
+     *
+     * @param request 用户请求信息
+     * @return 毒鸡汤信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<ShortWords> getShortWords(HttpServletRequest request) {
+        ServletContext servletContext = request.getServletContext();
+        List<ShortWords> shortWordsList = null;
+        if (servletContext.getAttribute("shortWords") == null) {
+            if (shortWordsDao.getCount() != 0) {
+                shortWordsList = shortWordsDao.getShortWordsByLimitOrderByTime(0, blogShortWordsCount);
+                servletContext.setAttribute("shortWords", shortWordsList);
+            }
+        } else {
+            shortWordsList = (List<ShortWords>)servletContext.getAttribute("shortWords");
+        }
+        return shortWordsList;
+    }
+
+    /**
+     * 获得系统保存毒鸡汤的最大个数
+     *
+     * @return 系统保存毒鸡汤的最大个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getSaveShortWordsCount() {
+        return blogShortWordsCount;
+    }
+
+    /**
+     * 添加标签
+     *
+     * @param name    标签名称
+     * @param request 用户请求信息
+     * @return 添加处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String addLabel(String name, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "添加失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (labelDao.getCount() >= blogLabelCount) {
+            content = "系统设置标签最大个数为" + blogLabelCount + "个，请删除后再次尝试！";
+        } else {
+            Label label = new Label();
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            String timeString = time.toString();
+            String id = timeString.split(" ")[0].split("-")[0] + timeString.split(" ")[0].split("-")[1] + timeString.split(" ")[0].split("-")[2] + timeString.split(" ")[1].split(":")[0] + timeString.split(" ")[1].split(":")[1] + timeString.split(" ")[1].split(":")[2].split("\\.")[0] + timeString.split(" ")[1].split(":")[2].split("\\.")[1];//注意，split是按照正则表达式进行分割，.在正则表达式中为特殊字符，需要转义。
+            while (labelDao.getCountById(id) != 0) {
+                long idLong = Long.parseLong(id);
+                Random random = new Random();
+                idLong += random.nextInt(100);
+                id = idLong + "";
+                if (id.length() > 17) {
+                    id = id.substring(0, 17);
+                }
+            }
+            label.setId(id);
+            label.setName(name);
+            label.setTime(time);
+            boolean isAddSuccess = false;
+            try {
+                if (labelDao.addLabel(label) == 0) {
+                    content = "添加数据库失败！";
+                } else {
+                    ServletContext servletContext = request.getServletContext();
+                    isAddSuccess = true;
+                    status = "true";
+                    content = "添加成功！";
+                    servletContext.setAttribute("label", null);
+                }
+            } catch (Exception e) {
+                content = "添加数据库失败！";
+            }
+            if (isAddSuccess && labelDao.getCount() > blogLabelCount) {
+                try {
+                    Label deleteLabel = labelDao.getLabelByLimitOrderByTimeAsc(0, 1).get(0);
+                    if (labelDao.deleteLabelById(deleteLabel.getId()) == 0) {
+                        System.out.println("在添加标签时删除超过数量的标签失败！");
+                    }
+                } catch (Exception e) {
+                    System.out.println("在添加标签时删除超过数量的标签失败！");
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
     }
 }

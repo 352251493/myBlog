@@ -4,29 +4,45 @@
     <div th:fragment="blog-introduction">
         <div class="blog-sidebar-widget blog-bor">
             <h2 class="blog-text-center blog-title"><span>关于我</span></h2>
-            <img src="/assets/img/head-img.jpg" alt="about me" class="blog-entry-img" >
-            <p>随遇而安。</p>
-            <p>一个热爱生活的天秤座程序员</p>
+            <img src="/assets/img/head-img.jpg" alt="关于我" class="blog-entry-img" >
+            <p th:if="${blog} == null or ${blog.ownerName} == null">随遇而安。</p>
+            <p th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName}">随遇而安。</p>
+            <p th:if="${blog} == null or ${blog.ownerIntroduction} == null">该博客主人暂时没有写简介哦~~~</p>
+            <p th:if="${blog} != null and ${blog.ownerIntroduction} != null" th:text="${blog.ownerIntroduction}">一个热爱生活的天秤座程序员</p>
             <!-- <p>我不想成为一个庸俗的人。十年百年后，当我们死去，质疑我们的人同样死去，后人看到的是裹足不前、原地打转的你，还是一直奔跑、走到远方的我？</p> -->
         </div>
         <div class="blog-sidebar-widget blog-bor">
             <h2 class="blog-text-center blog-title"><span>约起来</span></h2>
             <p>
-                <!-- <a href=""> --><span class="am-icon-qq am-icon-fw am-primary blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-qq.jpg\' height=\'300\' weight=\'200\'>'}"></span><!-- </a> -->
-                <a href="https://github.com/352251493"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
-                <!-- <a href=""> --><span class="am-icon-weibo am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-weibo.png\' height=\'300\' weight=\'200\'>'}"></span><!-- </a> -->
-                <!-- <a href=""> --><span class="am-icon-envelope am-icon-fw blog-icon" data-am-popover="{content: 'Email:guoxinguang123@qq.com'}"></span><!-- </a> -->
-                <!-- <a href=""> --><span class="am-icon-weixin am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-weixin.png\' height=\'300\' weight=\'200\'>'}"></span><!-- </a> -->
+                <span class="am-icon-qq am-icon-fw am-primary blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-qq.jpg\' height=\'300\' weight=\'200\'>'}" th:if="${blog} == null or ${blog.ownerQqImg} == null"></span>
+                <span class="am-icon-qq am-icon-fw am-primary blog-icon" data-am-popover="{content: '<img src=\'' + ${blog.ownerQqImg} + '\' height=\'300\' weight=\'200\'>'}" th:if="${blog} != null and ${blog.ownerQqImg} != null"></span>
+                <a href="https://github.com/352251493" th:if="${blog} == null or ${blog.ownerGithub} == null"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
+                <a href="${blog.ownerGithub}" th:if="${blog} != null and ${blog.ownerGithub} != null"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
+                <span class="am-icon-weibo am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-weibo.png\' height=\'300\' weight=\'200\'>'}" th:if="${blog} == null or ${blog.ownerWeiboImg} == null"></span>
+                <span class="am-icon-weibo am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'' + ${blog.ownerWeiboImg} + '\' height=\'300\' weight=\'200\'>'}" th:if="${blog} != null and ${blog.ownerWeiboImg} != null"></span>
+                <span class="am-icon-envelope am-icon-fw blog-icon" data-am-popover="{content: 'Email:guoxinguang123@qq.com'}" th:if="${blog} == null or ${blog.ownerEmail} == null"></span>
+                <span class="am-icon-envelope am-icon-fw blog-icon" data-am-popover="{content: '' + ${blog.ownerEmail} + ''}" th:if="${blog} != null and ${blog.ownerEmail} != null"></span>
+                <span class="am-icon-weixin am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-weixin.png\' height=\'300\' weight=\'200\'>'}" th:if="${blog} == null or ${blog.ownerWeixinImg} == null"></span>
+                <span class="am-icon-weixin am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'' + ${blog.ownerWeixinImg} + '\' height=\'300\' weight=\'200\'>'}" th:if="${blog} != null and ${blog.ownerWeixinImg} != null"></span>
             </p>
         </div>
         <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
             <h2 class="blog-title"><span>我的标签</span></h2>
-            <div class="am-u-sm-12 blog-clear-padding">
-                <span class="blog-tag">技术宅</span>
-                <span class="blog-tag">眼镜男</span>
-                <span class="blog-tag">IT民工</span>
-                <span class="blog-tag">选择恐惧症</span>
-                <span class="blog-tag">吃饱才有力气减肥</span>
+            <div class="am-u-sm-12 blog-clear-padding" th:if="${labelList} == null">
+                暂时没有标签哦~~~<br/>
+                <span th:if="${user} != null">快来<a href="javascript:openAddLabelModel(true);" style="color:chartreuse">点击</a>添加一个吧！</span>
+            </div>
+            <div class="am-u-sm-12 blog-clear-padding" th:if="${labelList} != null">
+                <span class="blog-tag" th:each="label : ${labelList}">
+                    <span th:text="${label.name}"></span>
+                </span>
+                <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} gt 0">-</a>
+                <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} lt ${labelCount}" href="javascript:openAddLabelModel(true);">+</a>
+                <!--<span class="blog-tag">技术宅</span>-->
+                <!--<span class="blog-tag">眼镜男</span>-->
+                <!--<span class="blog-tag">IT民工</span>-->
+                <!--<span class="blog-tag">选择恐惧症</span>-->
+                <!--<span class="blog-tag">吃饱才有力气减肥</span>-->
                 <!-- <a href="" class="blog-tag">妹纸 UI</a>
                 <a href="" class="blog-tag">HTML5</a>
                 <a href="" class="blog-tag">这是标签</a>
@@ -36,14 +52,23 @@
         </div>
         <div class="blog-sidebar-widget blog-bor">
             <h2 class="blog-title"><span>毒鸡汤</span></h2>
-            <ul class="am-list">
-                <li><!-- <a href="#"> --><p><br/>每个人都有一个死角， 自己走不出来，别人也闯不进去。</p><!-- </a> --></li>
-                <li><!-- <a href="#"> --><p><br/>我把最深沉的秘密放在那里。</p><!-- </a> --></li>
-                <li><!-- <a href="#"> --><p><br/>你不懂我，我不怪你。</p><!-- </a> --></li>
-                <li><!-- <a href="#"> --><p><br/>每个人都有一道伤口， 或深或浅，盖上布，以为不存在。</p><!-- </a> --></li>
-                <li><!-- <a href="#"> --><p><br/>有时候你不努力一下，你都不知道什么叫绝望。</p><!-- </a> --></li>
+            <ul class="am-list" th:if="${shortWordsList} == null">
+                暂时还没有毒鸡汤哦~~~<br/>
+                <span th:if="${user} != null">快来<a href="" style="color:chartreuse">点击</a>添加一个吧！</span>
             </ul>
+            <ul class="am-list" th:if="${shortWordsList} != null">
+                <li th:each="shortWords : ${shortWordsList}"><p th:utext="'<br/>' + ${shortWords.words}"><br/>每个人都有一个死角， 自己走不出来，别人也闯不进去。</p></li>
+                <!--<li><p><br/>每个人都有一个死角， 自己走不出来，别人也闯不进去。</p></li>-->
+                <!--<li><p><br/>我把最深沉的秘密放在那里。</p></li>-->
+                <!--<li><p><br/>你不懂我，我不怪你。</p></li>-->
+                <!--<li><p><br/>每个人都有一道伤口， 或深或浅，盖上布，以为不存在。</p></li>-->
+                <!--<li><p><br/>有时候你不努力一下，你都不知道什么叫绝望。</p></li>-->
             </ul>
+            <ul class="am-pagination am-pagination-right" th:if="${user} != null and ${shortWordsList} != null">
+                <li th:if="${#lists.size(shortWordsList)} gt 0"><a href="">删除</a></li>
+                <li th:if="${#lists.size(shortWordsList)} lt ${shortWordsCount}"><a href="">添加</a></li>
+            </ul>
+            <!--</ul>-->
         </div>
     </div>
 </body>

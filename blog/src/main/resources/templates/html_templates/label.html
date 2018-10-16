@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="add-label">
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="add-label-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd"><h1>添加标签</h1></div>
+            <div class="am-modal-bd">
+                <br/>
+                <form class="am-form am-form-horizontal">
+                    <div class="am-form-group">
+                        <label for="label-name" class="am-u-sm-4 am-form-label">标签名称</label>
+                        <div class="am-u-sm-8">
+                            <input type="text" id="label-name" placeholder="标签名称" maxlength="30">
+                        </div>
+                    </div>
+                </form>
+                <br/>
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

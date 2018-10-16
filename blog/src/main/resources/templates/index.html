@@ -6,16 +6,20 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>随遇而安.的个人博客</title>
+  <title th:if="${blog} == null or ${blog.ownerName} == null">随遇而安.的个人博客</title>
+  <title th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName} + '的个人博客'">随遇而安.的个人博客</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="Cache-Control" content="no-siteapp"/>
-  <link rel="icon" type="image/png" href="/assets/img/logo-ico.png">
+  <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" type="image/png" href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="mobile-web-app-capable" content="yes">
   <!--<link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png">-->
-  <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png">
+  <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" sizes="192x192" href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客"/>
+  <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
+  <meta name="apple-mobile-web-app-title" content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
   <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
   <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
   <meta name="msapplication-TileColor" content="#0e90d2">
@@ -216,6 +220,8 @@
   <footer class="blog-footer" th:include="/html_templates/footer.html :: footer"></footer>
     <div th:include="/html_templates/login.html :: login"></div>
     <div th:include="/html_templates/alert.html :: alert"></div>
+    <div th:include="/html_templates/label.html :: add-label"></div>
+
 
 
 <!--[if (gte IE 9)|!(IE)]><!-->
@@ -229,5 +235,6 @@
 <script src="/assets/js/amazeui.min.js"></script>
 
 <script src="/my/js/util.js"></script>
+<script src="/my/js/label.js"></script>
 </body>
 </html>

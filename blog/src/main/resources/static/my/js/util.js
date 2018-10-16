@@ -30,12 +30,16 @@ function login() {
 
     if (id == null || id.length == 0 || id == "") {
         openAlert("账号不能为空！");
+        openLoginModel();
     } else if (password == null || password.length == 0 || password == "") {
         openAlert("密码不能为空！");
+        openLoginModel();
     } else if (checkCode == null || checkCode.length == 0 || checkCode == "") {
         openAlert("验证码不能为空！");
+        openLoginModel();
     } else if (id.length > 8) {
         openAlert("账号长度不能大于8个字符！");
+        openLoginModel();
     } else {
         var obj = new Object();
         obj.id = id;
