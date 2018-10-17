@@ -1,6 +1,7 @@
 package com.gxg.dao.impl;
 
 import com.gxg.dao.BlogDao;
+import com.gxg.dao.rowmapper.BlogRowMapper;
 import com.gxg.entities.Blog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -40,7 +41,7 @@ public class BlogDaoImpl implements BlogDao {
     @Override
     public Blog getBlog() {
         String sql = "select * from blog limit 0, 1";
-
-        return null;
+        Blog blog = jdbcTemplate.queryForObject(sql, new BlogRowMapper());
+        return blog;
     }
 }

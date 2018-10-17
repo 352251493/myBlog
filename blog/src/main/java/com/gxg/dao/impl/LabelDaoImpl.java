@@ -4,10 +4,17 @@ import com.gxg.dao.LabelDao;
 import com.gxg.dao.rowmapper.LabelRowMapper;
 import com.gxg.entities.Label;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -103,5 +110,41 @@ public class LabelDaoImpl implements LabelDao {
         String sql = "select * from label order by time limit ?, ?";
         List<Label> labelList = jdbcTemplate.query(sql, new LabelRowMapper(), start, length);
         return labelList;
+    }
+
+    /**
+     * 根据id批量删除标签
+     *
+     * @param idList String[]要删除的标签的id数组
+     * @throws Exception 执行时抛出的异常
+     * @author 郭欣光
+     */
+    @Override
+    public void delete(String[] idList) throws Exception {
+        DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition();
+        defaultTransactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        defaultTransactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(jdbcTemplate.getDataSource());
+        TransactionStatus status = transactionManager.getTransaction(defaultTransactionDefinition);
+
+        String sql = "delete from label where id=?";
+
+        try {
+            jdbcTemplate.execute(sql, new PreparedStatementCallback() {
+                @Override
+                public Object doInPreparedStatement(PreparedStatement preparedStatement) throws SQLException, DataAccessException {
+                    for (int i = 0; i < idList.length; i++) {
+                        preparedStatement.setString(1, idList[i]);
+                        preparedStatement.addBatch();
+                    }
+                    preparedStatement.executeBatch();//数据不会持久化到数据库中
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+        transactionManager.commit(status);
     }
 }

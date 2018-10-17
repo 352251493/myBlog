@@ -53,6 +53,11 @@ public class CheckCodeServiceImpl implements CheckCodeService {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, 80, 30);
 
+        //设置干扰图片文字
+        g.setColor(Color.DARK_GRAY);
+        g.setFont(new Font(null, Font.BOLD, 16));
+        g.drawString("随遇而安。", 0, 20);
+
         //设置写入数据的颜色和字体
         g.setColor(Color.BLACK);
         g.setFont(new Font(null, Font.BOLD, 20));

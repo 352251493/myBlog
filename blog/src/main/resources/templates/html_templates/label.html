@@ -24,5 +24,29 @@
         </div>
     </div>
 </div>
+
+<div th:fragment="delete-label">
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="delete-label-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd"><h1>选择标签</h1></div>
+            <div class="am-modal-bd">
+                <br/>
+                <span th:if="${labelList} == null">暂时没有标签哦~~~</span>
+                <form class="am-form am-form-horizontal" th:if="${labelList} != null">
+                    <div class="am-form-group">
+                        <label class="am-checkbox-inline"  th:each="label : ${labelList}">
+                            <input type="checkbox" th:value="${label.id}" class="delete-label-checkbox"> <span th:text="${label.name}"></span>
+                        </label>
+                    </div>
+                </form>
+                <br/>
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

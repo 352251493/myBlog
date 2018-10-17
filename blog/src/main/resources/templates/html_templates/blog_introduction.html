@@ -36,7 +36,7 @@
                 <span class="blog-tag" th:each="label : ${labelList}">
                     <span th:text="${label.name}"></span>
                 </span>
-                <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} gt 0">-</a>
+                <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} gt 0" href="javascript:openDeleteLabelModel(); ">-</a>
                 <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} lt ${labelCount}" href="javascript:openAddLabelModel(true);">+</a>
                 <!--<span class="blog-tag">技术宅</span>-->
                 <!--<span class="blog-tag">眼镜男</span>-->

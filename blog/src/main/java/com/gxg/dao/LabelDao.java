@@ -58,4 +58,12 @@ public interface LabelDao {
      * @author 郭欣光
      */
     public List<Label> getLabelByLimitOrderByTimeAsc(int start, int length);
+
+    /**
+     * 根据id批量删除标签
+     * @param idList String[]要删除的标签的id数组
+     * @throws Exception 执行时抛出的异常
+     * @author 郭欣光
+     */
+    public void delete (String[] idList) throws Exception ;
 }

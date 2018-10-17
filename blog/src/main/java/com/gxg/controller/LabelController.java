@@ -28,4 +28,10 @@ public class LabelController {
     public String add(@RequestParam String name, HttpServletRequest request) {
         return blogService.addLabel(name, request);
     }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestParam String[] labelIdList, HttpServletRequest request) {
+        return blogService.deleteLabel(labelIdList, request);
+    }
 }

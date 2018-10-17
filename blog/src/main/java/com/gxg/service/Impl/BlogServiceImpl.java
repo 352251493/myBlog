@@ -348,4 +348,38 @@ public class BlogServiceImpl implements BlogService {
         result.accumulate("content", content);
         return result.toString();
     }
+
+    /**
+     * 删除标签
+     *
+     * @param labelIdList 要删除的标签ID列表
+     * @param request     用户请求的内容
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String deleteLabel(String[] labelIdList, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        HttpSession session = request.getSession();
+        String status = "false";
+        String content = "删除失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或者用户登录信息过期，请刷新页面重新登陆后再次尝试！";
+        } else if (labelIdList == null || labelIdList.length == 0) {
+            content = "请选择要删除的标签！";
+        } else {
+            try {
+                labelDao.delete(labelIdList);
+                status = "true";
+                content = "删除成功！";
+                ServletContext servletContext = request.getServletContext();
+                servletContext.setAttribute("label", null);
+            } catch (Exception e) {
+                content = "从数据库删除失败！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
 }

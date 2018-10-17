@@ -60,4 +60,13 @@ public interface BlogService {
      * @author 郭欣光
      */
     public String addLabel(String name, HttpServletRequest request);
+
+    /**
+     * 删除标签
+     * @param labelIdList 要删除的标签ID列表
+     * @param request 用户请求的内容
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String deleteLabel(String[] labelIdList, HttpServletRequest request);
 }
