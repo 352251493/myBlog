@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="short-words">
+        <div class="am-modal am-modal-prompt" tabindex="-1" id="add-short-words-model">
+            <div class="am-modal-dialog">
+                <div class="am-modal-hd"><h1>添加毒鸡汤</h1></div>
+                <div class="am-modal-bd">
+                    <br/>
+                    <form class="am-form am-form-horizontal">
+                        <div class="am-form-group">
+                            <label for="short-words-word" class="am-u-sm-2 am-form-label">毒鸡汤</label>
+                            <div class="am-u-sm-10">
+                                <input type="text" id="short-words-word" placeholder="不能超过100字符" maxlength="100">
+                            </div>
+                        </div>
+                    </form>
+                    <br/>
+                </div>
+                <div class="am-modal-footer">
+                    <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                    <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="am-modal am-modal-prompt" tabindex="-1" id="delete-short-words-model">
+            <div class="am-modal-dialog">
+                <div class="am-modal-hd"><h1>选择毒鸡汤</h1></div>
+                <div class="am-modal-bd">
+                    <br/>
+                    <span th:if="${shortWordsList} == null">暂时没有毒鸡汤哦~~~<br/></span>
+                    <form class="am-form am-form-horizontal" th:if="${shortWordsList} != null">
+                        <div class="am-form-group">
+                            <label class="am-u-sm-2 am-form-label">&nbsp;</label>
+                            <div class="am-u-sm-8">
+                                <select id="delete-short-words-select">
+                                    <option th:each="shortWords : ${shortWordsList}" th:value="${shortWords.id}" th:text="${#strings.abbreviate(shortWords.word,15)}"></option>
+                                </select>
+                            </div>
+                            <label class="am-u-sm-2 am-form-label">&nbsp;</label>
+                        </div>
+                    </form>
+                    <br/>
+                </div>
+                <div class="am-modal-footer">
+                    <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                    <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

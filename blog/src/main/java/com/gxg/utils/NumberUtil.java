@@ -1,5 +1,6 @@
 package com.gxg.utils;
 
+import java.sql.Timestamp;
 import java.util.Random;
 
 /**

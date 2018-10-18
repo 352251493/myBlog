@@ -16,7 +16,7 @@ public class ShortWordsMapper implements RowMapper<ShortWords> {
     public ShortWords mapRow(ResultSet resultSet, int i) throws SQLException {
         ShortWords shortWords = new ShortWords();
         shortWords.setId(resultSet.getString("id"));
-        shortWords.setWords(resultSet.getString("words"));
+        shortWords.setWord(resultSet.getString("word"));
         shortWords.setTime(resultSet.getTimestamp("time"));
         return shortWords;
     }

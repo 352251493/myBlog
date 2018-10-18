@@ -300,6 +300,10 @@ public class BlogServiceImpl implements BlogService {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") == null) {
             content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (name == null || name.length() == 0 || "".equals(name)) {
+            content = "标签名称不能为空！";
+        } else if (name.length() > 30) {
+            content = "标签名称长度不能超过30字符！";
         } else if (labelDao.getCount() >= blogLabelCount) {
             content = "系统设置标签最大个数为" + blogLabelCount + "个，请删除后再次尝试！";
         } else {
@@ -374,6 +378,113 @@ public class BlogServiceImpl implements BlogService {
                 content = "删除成功！";
                 ServletContext servletContext = request.getServletContext();
                 servletContext.setAttribute("label", null);
+            } catch (Exception e) {
+                content = "从数据库删除失败！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 添加毒鸡汤
+     *
+     * @param word    毒鸡汤
+     * @param request 用户请求信息
+     * @return String 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String addShortWords(String word, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "添加失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或者用户登录信息过期，请刷新页面重新登陆后再次尝试！";
+        } else if (word == null || word.length() == 0 || "".equals(word)) {
+            content = "毒鸡汤不能为空！";
+        } else if (word.length() > 100) {
+            content = "毒鸡汤长度不能超过100字符！";
+        } else if (shortWordsDao.getCount() >= blogShortWordsCount) {
+            content = "系统设置标签最大个数为" + blogShortWordsCount + "个，请删除后再次尝试！";
+        } else {
+            ShortWords shortWords = new ShortWords();
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            String timeString = time.toString();
+            String id = timeString.split(" ")[0].split("-")[0] + timeString.split(" ")[0].split("-")[1] + timeString.split(" ")[0].split("-")[2] + timeString.split(" ")[1].split(":")[0] + timeString.split(" ")[1].split(":")[1] + timeString.split(" ")[1].split(":")[2].split("\\.")[0] + timeString.split(" ")[1].split(":")[2].split("\\.")[1];//注意，split是按照正则表达式进行分割，.在正则表达式中为特殊字符，需要转义。
+            while (shortWordsDao.getCountById(id) != 0) {
+                long idLong = Long.parseLong(id);
+                Random random = new Random();
+                idLong += random.nextInt(100);
+                id = idLong + "";
+                if (id.length() > 17) {
+                    id = id.substring(0, 17);
+                }
+            }
+            shortWords.setId(id);
+            shortWords.setWord(word);
+            shortWords.setTime(time);
+            boolean isAddSuccess = false;
+            try {
+                if (shortWordsDao.addShortWords(shortWords) == 0) {
+                    content = "毒鸡汤添加数据库失败！";
+                } else {
+                    isAddSuccess = true;
+                    ServletContext servletContext = request.getServletContext();
+                    servletContext.setAttribute("shortWords", null);
+                    status = "true";
+                    content = "添加成功！";
+                }
+            } catch (Exception e) {
+                content = "毒鸡汤添加数据库失败！";
+            }
+
+            if (isAddSuccess && shortWordsDao.getCount() > blogShortWordsCount) {
+                try {
+                    ShortWords deleteShortWords = shortWordsDao.getShortWordsByLimitOrderByTimeAsc(0, 1).get(0);
+                    if (shortWordsDao.deleteShortWordsById(deleteShortWords.getId()) == 0) {
+                        System.out.println("在添加毒鸡汤时删除超过数量的毒鸡汤失败！");
+                    }
+                } catch (Exception e) {
+                    System.out.println("在添加毒鸡汤时删除超过数量的毒鸡汤失败！");
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 删除指定id的毒鸡汤
+     *
+     * @param id      毒鸡汤id
+     * @param request 用户请求内容
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String deleteShortWords(String id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或者用户登录信息过期，请刷新页面重新登陆后再次尝试！";
+        } else if (id == null || id.length() == 0 || "".equals(id)) {
+            content = "请选择要删除的毒鸡汤！";
+        } else {
+            try {
+                if (shortWordsDao.deleteShortWordsById(id) == 0) {
+                    content = "从数据库删除失败！";
+                } else {
+                    status = "true";
+                    content = "删除成功！";
+                    ServletContext servletContext = request.getServletContext();
+                    servletContext.setAttribute("shortWords", null);
+                }
             } catch (Exception e) {
                 content = "从数据库删除失败！";
             }

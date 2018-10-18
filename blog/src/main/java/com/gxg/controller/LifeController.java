@@ -47,7 +47,7 @@ public class LifeController {
         int labelCount = blogService.getSaveLabelCount();
         model.addAttribute("labelCount", labelCount);
         List<ShortWords> shortWordsList = blogService.getShortWords(request);
-        if (shortWordsList == null) {
+        if (shortWordsList != null) {
             model.addAttribute("shortWordsList", shortWordsList);
         }
         int shortWordsCount = blogService.getSaveShortWordsCount();

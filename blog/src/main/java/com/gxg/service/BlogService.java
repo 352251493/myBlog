@@ -69,4 +69,22 @@ public interface BlogService {
      * @author 郭欣光
      */
     public String deleteLabel(String[] labelIdList, HttpServletRequest request);
+
+    /**
+     * 添加毒鸡汤
+     * @param word 毒鸡汤
+     * @param request 用户请求信息
+     * @return String 处理结果
+     * @author 郭欣光
+     */
+    public String addShortWords(String word, HttpServletRequest request);
+
+    /**
+     * 删除指定id的毒鸡汤
+     * @param id 毒鸡汤id
+     * @param request 用户请求内容
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String deleteShortWords(String id, HttpServletRequest request);
 }

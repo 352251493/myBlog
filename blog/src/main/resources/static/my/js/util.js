@@ -30,16 +30,12 @@ function login() {
 
     if (id == null || id.length == 0 || id == "") {
         openAlert("账号不能为空！");
-        openLoginModel();
     } else if (password == null || password.length == 0 || password == "") {
         openAlert("密码不能为空！");
-        openLoginModel();
     } else if (checkCode == null || checkCode.length == 0 || checkCode == "") {
         openAlert("验证码不能为空！");
-        openLoginModel();
     } else if (id.length > 8) {
         openAlert("账号长度不能大于8个字符！");
-        openLoginModel();
     } else {
         var obj = new Object();
         obj.id = id;
@@ -51,21 +47,7 @@ function login() {
             cache: false,//设置不缓存
             data: obj,
             success: loginSuccess,
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                if (XMLHttpRequest.status >= 400 && XMLHttpRequest.status < 500) {
-                    openAlert("客户端请求出错！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
-                    openLoginModel();
-                } else if (XMLHttpRequest.status >= 500 || XMLHttpRequest.status <= 600) {
-                    openAlert("服务器出错！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
-                    openLoginModel();
-                } else if (XMLHttpRequest.status >= 300 || XMLHttpRequest.status < 400) {
-                    openAlert("重定向问题！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
-                    openLoginModel();
-                } else {
-                    openAlert("抱歉，系统好像出现一些异常！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
-                    openLoginModel();
-                }
-            }
+            error: openAjaxErrorAlert
         });
     }
 }
@@ -76,6 +58,17 @@ function loginSuccess(data) {
         window.location.reload();
     } else {
         openAlert(result.content);
-        openLoginModel();
+    }
+}
+
+function openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown) {
+    if (XMLHttpRequest.status >= 400 && XMLHttpRequest.status < 500) {
+        openAlert("客户端请求出错！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
+    } else if (XMLHttpRequest.status >= 500 || XMLHttpRequest.status <= 600) {
+        openAlert("服务器出错！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
+    } else if (XMLHttpRequest.status >= 300 || XMLHttpRequest.status < 400) {
+        openAlert("重定向问题！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
+    } else {
+        openAlert("抱歉，系统好像出现一些异常！错误代码（" + XMLHttpRequest.status + "," + XMLHttpRequest.readyState + "," + textStatus + "）");
     }
 }

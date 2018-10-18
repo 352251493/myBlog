@@ -30,14 +30,14 @@
             <h2 class="blog-title"><span>我的标签</span></h2>
             <div class="am-u-sm-12 blog-clear-padding" th:if="${labelList} == null">
                 暂时没有标签哦~~~<br/>
-                <span th:if="${user} != null">快来<a href="javascript:openAddLabelModel(true);" style="color:chartreuse">点击</a>添加一个吧！</span>
+                <span th:if="${user} != null">快来<a href="javascript:openAddLabelModel();" style="color:chartreuse">点击</a>添加一个吧！</span>
             </div>
             <div class="am-u-sm-12 blog-clear-padding" th:if="${labelList} != null">
                 <span class="blog-tag" th:each="label : ${labelList}">
                     <span th:text="${label.name}"></span>
                 </span>
                 <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} gt 0" href="javascript:openDeleteLabelModel(); ">-</a>
-                <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} lt ${labelCount}" href="javascript:openAddLabelModel(true);">+</a>
+                <a class="blog-tag" th:if="${user} != null and ${#lists.size(labelList)} lt ${labelCount}" href="javascript:openAddLabelModel();">+</a>
                 <!--<span class="blog-tag">技术宅</span>-->
                 <!--<span class="blog-tag">眼镜男</span>-->
                 <!--<span class="blog-tag">IT民工</span>-->
@@ -54,10 +54,10 @@
             <h2 class="blog-title"><span>毒鸡汤</span></h2>
             <ul class="am-list" th:if="${shortWordsList} == null">
                 暂时还没有毒鸡汤哦~~~<br/>
-                <span th:if="${user} != null">快来<a href="" style="color:chartreuse">点击</a>添加一个吧！</span>
+                <span th:if="${user} != null">快来<a href="javascript:openAddShortWordsModel();" style="color:chartreuse">点击</a>添加一个吧！</span>
             </ul>
-            <ul class="am-list" th:if="${shortWordsList} != null">
-                <li th:each="shortWords : ${shortWordsList}"><p th:utext="'<br/>' + ${shortWords.words}"><br/>每个人都有一个死角， 自己走不出来，别人也闯不进去。</p></li>
+            <ul class="am-list confirm-list" th:if="${shortWordsList} != null">
+                <li th:each="shortWords : ${shortWordsList}"><p th:utext="'<br/>' + ${shortWords.word}"><br/>每个人都有一个死角， 自己走不出来，别人也闯不进去。</p></li>
                 <!--<li><p><br/>每个人都有一个死角， 自己走不出来，别人也闯不进去。</p></li>-->
                 <!--<li><p><br/>我把最深沉的秘密放在那里。</p></li>-->
                 <!--<li><p><br/>你不懂我，我不怪你。</p></li>-->
@@ -65,8 +65,10 @@
                 <!--<li><p><br/>有时候你不努力一下，你都不知道什么叫绝望。</p></li>-->
             </ul>
             <ul class="am-pagination am-pagination-right" th:if="${user} != null and ${shortWordsList} != null">
-                <li th:if="${#lists.size(shortWordsList)} gt 0"><a href="">删除</a></li>
-                <li th:if="${#lists.size(shortWordsList)} lt ${shortWordsCount}"><a href="">添加</a></li>
+                <a href="javascript:openDeleteShortWordsModel();" class="am-btn am-btn-danger" th:if="${#lists.size(shortWordsList)} gt 0">删除</a>
+                <a href="javascript:openAddShortWordsModel();" class="am-btn am-btn-primary" th:if="${#lists.size(shortWordsList)} lt ${shortWordsCount}">添加</a>
+                <!--<li th:if="${#lists.size(shortWordsList)} gt 0"><a href="" class="am-btn am-btn-danger">删除</a></li>-->
+                <!--<li th:if="${#lists.size(shortWordsList)} lt ${shortWordsCount}"><a href="javascript:openAddShortWordsModel(true);" class="am-btn am-btn-primary">添加</a></li>-->
             </ul>
             <!--</ul>-->
         </div>

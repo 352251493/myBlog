@@ -11,7 +11,7 @@ public class ShortWords {
 
     private String id;
 
-    private String words;
+    private String word;
 
     private Timestamp time;
 
@@ -23,12 +23,12 @@ public class ShortWords {
         this.id = id;
     }
 
-    public String getWords() {
-        return words;
+    public String getWord() {
+        return word;
     }
 
-    public void setWords(String words) {
-        this.words = words;
+    public void setWord(String word) {
+        this.word = word;
     }
 
     public Timestamp getTime() {

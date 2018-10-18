@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="add-label">
+<div th:fragment="label">
     <div class="am-modal am-modal-prompt" tabindex="-1" id="add-label-model">
         <div class="am-modal-dialog">
             <div class="am-modal-hd"><h1>添加标签</h1></div>
@@ -23,9 +23,7 @@
             </div>
         </div>
     </div>
-</div>
 
-<div th:fragment="delete-label">
     <div class="am-modal am-modal-prompt" tabindex="-1" id="delete-label-model">
         <div class="am-modal-dialog">
             <div class="am-modal-hd"><h1>选择标签</h1></div>
@@ -47,6 +45,20 @@
             </div>
         </div>
     </div>
+
+    <div class="am-modal am-modal-confirm" tabindex="-1" id="delete-label-confirm">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">我的标签</div>
+            <div class="am-modal-bd">
+                确定要删除这条记录吗？
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>确定</span>
+            </div>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>
