@@ -87,4 +87,16 @@ public interface BlogService {
      * @author 郭欣光
      */
     public String deleteShortWords(String id, HttpServletRequest request);
+
+    /**
+     * 设置博客基础信息
+     * @param ownerName 博客所属者昵称
+     * @param ownerIntroduction 博客所属这简介
+     * @param ownerGithub 博客所属者Github
+     * @param ownerEmail 博客所属者Email
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String setBaseInformation(String ownerName, String ownerIntroduction, String ownerGithub, String ownerEmail, HttpServletRequest request);
 }

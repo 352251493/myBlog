@@ -44,4 +44,33 @@ public class BlogDaoImpl implements BlogDao {
         Blog blog = jdbcTemplate.queryForObject(sql, new BlogRowMapper());
         return blog;
     }
+
+    /**
+     * 新增博客信息
+     *
+     * @param blog 博客信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int insertBlog(Blog blog) {
+        String sql = "insert into blog(owner_name, owner_introduction, logo_ico, logo, owner_head_img, owner_qq_img, owner_weibo_img, owner_weixin_img, owner_github, owner_email) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, blog.getOwnerName(), blog.getOwnerIntroduction(), blog.getLogoIco(), blog.getLogo(), blog.getOwnerHeadImg(), blog.getOwnerQqImg(), blog.getOwnerWeiboImg(), blog.getOwnerWeixinImg(), blog.getOwnerGithub(), blog.getOwnerEmail());
+        return changeCount;
+    }
+
+    /**
+     * 根据原ownerName修改博客信息
+     *
+     * @param blog      博客信息
+     * @param ownerName 原博客所属者昵称
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int updateBlogByOwnerName(Blog blog, String ownerName) {
+        String sql = "update blog set owner_name=?, owner_introduction=?, logo_ico=?, logo=?, owner_head_img=?, owner_qq_img=?, owner_weibo_img=?, owner_weixin_img=?, owner_github=?, owner_email=? where owner_name=?";
+        int changeCount = jdbcTemplate.update(sql, blog.getOwnerName(), blog.getOwnerIntroduction(), blog.getLogoIco(), blog.getLogo(), blog.getOwnerHeadImg(), blog.getOwnerQqImg(), blog.getOwnerWeiboImg(), blog.getOwnerWeixinImg(), blog.getOwnerGithub(), blog.getOwnerEmail(), ownerName);
+        return changeCount;
+    }
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="blog-set">
+    <div class="am-modal am-modal-no-btn" tabindex="-1" id="blog-set-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">博客设置
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close id="close-blog-set-model">&times;</a>
+            </div>
+            <div class="am-modal-bd">
+                <button type="button" class="am-btn am-btn-default am-round" onclick="openBaseInformationModel();">基础信息设置</button>
+                <button type="button" class="am-btn am-btn-default am-round">其他信息设置</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="base-information-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd"><h1>基础信息</h1></div>
+            <div class="am-modal-bd">
+                <br/>
+                <form class="am-form am-form-horizontal">
+                    <div class="am-form-group">
+                        <label for="owner-name" class="am-u-sm-2 am-form-label">昵称</label>
+                        <div class="am-u-sm-10">
+                            <input type="text" id="owner-name" placeholder="输入昵称" maxlength="10" th:if="${blog} == null or ${blog.ownerName} == null">
+                            <input type="text" id="owner-name" placeholder="输入昵称" maxlength="10" th:if="${blog} != null and ${blog.ownerName} != null" th:value="${blog.ownerName}">
+                        </div>
+                    </div>
+
+                    <div class="am-form-group">
+                        <label for="owner-introduction" class="am-u-sm-2 am-form-label">简介</label>
+                        <div class="am-u-sm-10">
+                            <input type="text" id="owner-introduction" placeholder="请输入简介" maxlength="100" th:if="${blog} == null or ${blog.ownerIntroduction} == null">
+                            <input type="text" id="owner-introduction" placeholder="请输入简介" maxlength="100" th:if="${blog} != null and ${blog.ownerIntroduction} != null" th:value="${blog.ownerIntroduction}">
+                        </div>
+                    </div>
+
+                    <div class="am-form-group">
+                        <label for="owner-github" class="am-u-sm-2 am-form-label">Github</label>
+                        <div class="am-u-sm-10">
+                            <input type="url" id="owner-github" placeholder="请输入Github" maxlength="100" th:if="${blog} == null or ${blog.ownerGithub} == null">
+                            <input type="url" id="owner-github" placeholder="请输入Github" maxlength="100" th:if="${blog} != null and ${blog.ownerGithub} != null" th:value="${blog.ownerGithub}">
+                        </div>
+                    </div>
+
+                    <div class="am-form-group">
+                        <label for="owner-email" class="am-u-sm-2 am-form-label">邮箱</label>
+                        <div class="am-u-sm-10">
+                            <input type="email" id="owner-email" placeholder="请输入Email" maxlength="100" th:if="${blog} == null or ${blog.ownerEmail} == null">
+                            <input type="email" id="owner-email" placeholder="请输入Email" maxlength="100" th:if="${blog} != null and ${blog.ownerEmail} != null" th:value="${blog.ownerEmail}">
+                        </div>
+                    </div>
+                </form>
+                <br/>
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

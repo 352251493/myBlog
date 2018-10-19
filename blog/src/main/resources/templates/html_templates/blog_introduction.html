@@ -15,15 +15,19 @@
             <h2 class="blog-text-center blog-title"><span>约起来</span></h2>
             <p>
                 <span class="am-icon-qq am-icon-fw am-primary blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-qq.jpg\' height=\'300\' weight=\'200\'>'}" th:if="${blog} == null or ${blog.ownerQqImg} == null"></span>
-                <span class="am-icon-qq am-icon-fw am-primary blog-icon" data-am-popover="{content: '<img src=\'' + ${blog.ownerQqImg} + '\' height=\'300\' weight=\'200\'>'}" th:if="${blog} != null and ${blog.ownerQqImg} != null"></span>
+                <span class="am-icon-qq am-icon-fw am-primary blog-icon" th:if="${blog} != null and ${blog.ownerQqImg} != null" id="show-owner-qq-img"></span>
+                <input type="hidden" id="owner-qq-img-hidden" th:value="'<img src=\'' + ${blog.ownerQqImg} + '\' height=\'300\' weight=\'200\'>'" th:if="${blog} != null and ${blog.ownerQqImg} != null">
                 <a href="https://github.com/352251493" th:if="${blog} == null or ${blog.ownerGithub} == null"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
-                <a href="${blog.ownerGithub}" th:if="${blog} != null and ${blog.ownerGithub} != null"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
+                <a th:href="${blog.ownerGithub}" th:if="${blog} != null and ${blog.ownerGithub} != null"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
                 <span class="am-icon-weibo am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-weibo.png\' height=\'300\' weight=\'200\'>'}" th:if="${blog} == null or ${blog.ownerWeiboImg} == null"></span>
-                <span class="am-icon-weibo am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'' + ${blog.ownerWeiboImg} + '\' height=\'300\' weight=\'200\'>'}" th:if="${blog} != null and ${blog.ownerWeiboImg} != null"></span>
+                <span class="am-icon-weibo am-icon-fw blog-icon" th:if="${blog} != null and ${blog.ownerWeiboImg} != null" id="show-owner-weibo-img"></span>
+                <input type="hidden" id="owner-weibo-img-hidden" th:value="'<img src=\'' + ${blog.ownerWeiboImg} + '\' height=\'300\' weight=\'200\'>'" th:if="${blog} != null and ${blog.ownerWeiboImg} != null">
                 <span class="am-icon-envelope am-icon-fw blog-icon" data-am-popover="{content: 'Email:guoxinguang123@qq.com'}" th:if="${blog} == null or ${blog.ownerEmail} == null"></span>
-                <span class="am-icon-envelope am-icon-fw blog-icon" data-am-popover="{content: '' + ${blog.ownerEmail} + ''}" th:if="${blog} != null and ${blog.ownerEmail} != null"></span>
+                <span class="am-icon-envelope am-icon-fw blog-icon" th:if="${blog} != null and ${blog.ownerEmail} != null" id="show-owner-email"></span>
+                <input type="hidden" id="owner-email-hidden" th:value="'Email:' + ${blog.ownerEmail}" th:if="${blog} != null and ${blog.ownerEmail} != null">
                 <span class="am-icon-weixin am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'/assets/img/my-weixin.png\' height=\'300\' weight=\'200\'>'}" th:if="${blog} == null or ${blog.ownerWeixinImg} == null"></span>
-                <span class="am-icon-weixin am-icon-fw blog-icon" data-am-popover="{content: '<img src=\'' + ${blog.ownerWeixinImg} + '\' height=\'300\' weight=\'200\'>'}" th:if="${blog} != null and ${blog.ownerWeixinImg} != null"></span>
+                <span class="am-icon-weixin am-icon-fw blog-icon" th:if="${blog} != null and ${blog.ownerWeixinImg} != null" id="show-owner-weixin-img"></span>
+                <input type="hidden" id="owner-weixin-img-hidden" th:value="'<img src=\'' + ${blog.ownerWeixinImg} + '\' height=\'300\' weight=\'200\'>'" th:if="${blog} != null and ${blog.ownerWeixinImg} != null">
             </p>
         </div>
         <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">

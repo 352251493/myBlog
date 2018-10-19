@@ -91,4 +91,23 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+    /**
+     * 用户退出
+     *
+     * @param request 用户请求
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String signOut(HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "true";
+        String content = "退出成功！";
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        HttpSession session = request.getSession();
+        session.setAttribute("user", null);
+        return result.toString();
+    }
 }

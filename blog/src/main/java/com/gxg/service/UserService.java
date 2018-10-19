@@ -29,4 +29,12 @@ public interface UserService {
      * @author 郭欣光
      */
     public User getLoginUser(HttpServletRequest request);
+
+    /**
+     * 用户退出
+     * @param request 用户请求
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String signOut(HttpServletRequest request);
 }

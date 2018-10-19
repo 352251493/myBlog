@@ -36,4 +36,10 @@ public class UserController {
     public String login(@RequestParam String id, @RequestParam String password, @RequestParam String checkCode, HttpServletRequest request) {
         return userService.login(id, password, checkCode, request);
     }
+
+    @PostMapping(value = "/sign_out")
+    @ResponseBody
+    public String signOut(HttpServletRequest request) {
+        return userService.signOut(request);
+    }
 }

@@ -8,6 +8,7 @@ import com.gxg.entities.Label;
 import com.gxg.entities.ShortWords;
 import com.gxg.service.BlogService;
 import com.gxg.utils.FileUtil;
+import com.gxg.utils.RegularExpressionUtil;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -487,6 +488,92 @@ public class BlogServiceImpl implements BlogService {
                 }
             } catch (Exception e) {
                 content = "从数据库删除失败！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 设置博客基础信息
+     *
+     * @param ownerName         博客所属者昵称
+     * @param ownerIntroduction 博客所属这简介
+     * @param ownerGithub       博客所属者Github
+     * @param ownerEmail        博客所属者Email
+     * @param request           用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String setBaseInformation(String ownerName, String ownerIntroduction, String ownerGithub, String ownerEmail, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "设置失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或者用户登录信息过期，请刷新页面重新登陆后再次尝试！";
+        } else if (ownerName == null || ownerName.length() == 0 || "".equals(ownerName)) {
+            content = "昵称不能为空！";
+        } else if (ownerIntroduction == null || ownerIntroduction.length() == 0 || "".equals(ownerIntroduction)) {
+            content = "简介不能为空！";
+        } else if (ownerGithub == null || ownerGithub.length() == 0 || "".equals(ownerGithub)) {
+            content = "Github不能为空！";
+        } else if (ownerEmail == null || ownerEmail.length() == 0 || "".equals(ownerEmail)) {
+            content = "邮箱不能为空！";
+        } else if (ownerName.length() > 10) {
+            content = "昵称长度不能超过10字符！";
+        } else if (ownerIntroduction.length() > 100) {
+            content = "简介长度不能超过100字符！";
+        } else if (ownerGithub.length() > 100) {
+            content = "Github长度不能超过100字符！";
+        } else if (!RegularExpressionUtil.checkUrl(ownerGithub)) {
+            content = "Github不是一个标准url格式！";
+        } else if (ownerEmail.length() > 100) {
+            content = "邮箱长度不能超过100字符！";
+        } else if (!RegularExpressionUtil.checkEmail(ownerEmail)) {
+            content = "邮箱不是一个标准Email格式！";
+        } else {
+            Blog blog;
+            boolean isNew = false;
+            String oldBlogName = null;
+            if (blogDao.getBlogNumber() == 0) {
+                isNew = true;
+                blog = new Blog();
+            } else {
+                blog = blogDao.getBlog();
+                oldBlogName = blog.getOwnerName();
+            }
+            blog.setOwnerName(ownerName);
+            blog.setOwnerIntroduction(ownerIntroduction);
+            blog.setOwnerGithub(ownerGithub);
+            blog.setOwnerEmail(ownerEmail);
+            ServletContext servletContext = request.getServletContext();
+            if (isNew) {
+                try {
+                    if (blogDao.insertBlog(blog) == 0) {
+                        content = "博客信息写入数据库失败！";
+                    } else {
+                        servletContext.setAttribute("blog", null);
+                        status = "true";
+                        content = "设置成功！";
+                    }
+                } catch (Exception e) {
+                    content = "博客信息写入数据库失败！";
+                }
+            } else {
+                try {
+                    if (blogDao.updateBlogByOwnerName(blog, oldBlogName) == 0) {
+                        content = "博客信息写入数据库失败！";
+                    } else {
+                        servletContext.setAttribute("blog", null);
+                        status = "true";
+                        content = "设置成功！";
+                    }
+                } catch (Exception e) {
+                    content = "博客信息写入数据库失败！";
+                }
             }
         }
         result.accumulate("status", status);
