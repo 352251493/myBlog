@@ -9,7 +9,7 @@
             </div>
             <div class="am-modal-bd">
                 <button type="button" class="am-btn am-btn-default am-round" onclick="openBaseInformationModel();">基础信息设置</button>
-                <button type="button" class="am-btn am-btn-default am-round">其他信息设置</button>
+                <button type="button" class="am-btn am-btn-default am-round" onclick="openOtherInformationModel();">其他信息设置</button>
             </div>
         </div>
     </div>
@@ -57,6 +57,51 @@
             <div class="am-modal-footer">
                 <span class="am-modal-btn" data-am-modal-cancel>取消</span>
                 <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="other-information-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd"><h1>其他信息</h1></div>
+            <div class="am-modal-bd">
+                <br/>
+                <form class="am-form am-form-inline" enctype="multipart/form-data" id="other-information-form">
+                    <div class="am-form-group">
+                        <select id="informationName" name="informationName">
+                            <option value="logo-ico">博客图标</option>
+                            <option value="logo">博客logo</option>
+                            <option value="head-img">博客头像</option>
+                            <option value="my-qq">QQ二维码</option>
+                            <option value="my-weibo">微博二维码</option>
+                            <option value="my-weixin">微信二维码</option>
+                        </select>
+                    </div>
+                    <div class="am-form-group am-form-file">
+                        <button type="button" class="am-btn am-btn-default am-btn-sm">
+                            <i class="am-icon-cloud-upload"></i> 选择要上传的图片</button>
+                        <input type="file" multiple accept="image/*" id="uploadBlogImage" name="uploadBlogImage">
+                    </div>
+                    <p style="color: red;">* 图片大小不能超过50MB</p>
+                </form>
+                <br/>
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-modal am-modal-no-btn" tabindex="-1" id="upload-file-progress-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">正在上传
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close id="close-upload-file-process-model"></a>
+            </div>
+            <div class="am-modal-bd">
+                <div class="am-progress am-progress-striped am-active ">
+                    <div class="am-progress-bar am-progress-bar-secondary"  style="width: 0.00%" id="upload-file-progress">0.00%</div>
+                </div>
             </div>
         </div>
     </div>

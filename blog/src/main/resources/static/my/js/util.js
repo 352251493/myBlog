@@ -197,3 +197,74 @@ function isEmail(str) {
     var reg= /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
     return reg.test(str);
 }
+
+
+function openOtherInformationModel() {
+    $("#close-blog-set-model").click();
+    $('#other-information-model').modal({
+        relatedTarget: this,
+        onConfirm: function(e) {
+            setOtherInformation();
+        },
+        onCancel: function(e) {
+        }
+    });
+}
+
+function setOtherInformation() {
+    var informationName = $('#informationName option:selected').val();
+    var file =  document.getElementById('uploadBlogImage').files[0];
+    var filePath = $('#uploadBlogImage').val().toLowerCase().split(".");
+    var fileType =  filePath[filePath.length - 1];
+    if (informationName == null || informationName == "" || informationName.length == 0) {
+        openAlert("请求不符合要求！");
+    } else if (file == null) {
+        openAlert("请选择要上传的图片！");
+    } else if (fileType != "bmf" && fileType != "png" && fileType != "gif" && fileType != "jpg" && fileType != "jpeg") {
+        openAlert("上传的文件必须为图片类型！");
+    } else if (file.size > 50 * 1024 * 1024) {
+        //file.size 以字节为单位
+        openAlert("图片大小不能超过50MB！");
+    } else {
+        var formData = new FormData($('#other-information-form')[0]);
+        $("#upload-file-progress").html("0.00%");
+        $("#upload-file-progress").css("width", "0.00%");
+        $('#upload-file-progress-model').modal({
+            relatedTarget: this,
+            closeViaDimmer: false
+        });
+        var url = "/blog/set_other_information";
+        // XMLHttpRequest 对象
+        var xhr = new XMLHttpRequest();
+        //true为异步处理
+        xhr.open('post', url, true);
+        //上传开始执行方法
+        xhr.onloadstart = function() {
+            console.log('开始上传');
+        };
+        xhr.upload.addEventListener('progress', uploadBlogImageProgressFunction, false);
+        xhr.addEventListener("load", uploadBlogImageComplete, false);
+        xhr.addEventListener("error", uploadBlogImageFailed, false);
+    }
+}
+
+function uploadBlogImageProgressFunction(evt) {
+    debugger;
+    if (evt.lengthComputable) {
+        var completePercent = Math.round(evt.loaded / evt.total * 100)
+            + '%';
+        $("#upload-file-progress").html(completePercent);
+        $("#upload-file-progress").css("width", completePercent);
+    }
+}
+
+function uploadBlogImageComplete(evt) {
+    alert(evt.target.responseText);
+    window.location.reload();
+}
+
+function uploadBlogImageFailed(evt) {
+    $("#close-upload-file-process-model").click();
+    alert(evt.target.responseText);
+    openAlert("上传失败！");
+}

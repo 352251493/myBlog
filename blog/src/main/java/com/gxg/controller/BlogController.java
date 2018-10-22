@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,5 +27,12 @@ public class BlogController {
     @ResponseBody
     public String setBaseInformation(@RequestParam String ownerName, @RequestParam String ownerIntroduction, @RequestParam String ownerGithub, @RequestParam String ownerEmail, HttpServletRequest request) {
         return blogService.setBaseInformation(ownerName, ownerIntroduction, ownerGithub, ownerEmail, request);
+    }
+
+    @PostMapping(value = "/set_other_information")
+    @ResponseBody
+    public String setOtherInformation(@RequestParam String informationName, @RequestParam MultipartFile uploadBlogImage, HttpServletRequest request) {
+        //https://www.cnblogs.com/zincredible/p/9060663.html
+        return "";
     }
 }
