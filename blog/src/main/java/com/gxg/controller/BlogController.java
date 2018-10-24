@@ -32,7 +32,6 @@ public class BlogController {
     @PostMapping(value = "/set_other_information")
     @ResponseBody
     public String setOtherInformation(@RequestParam String informationName, @RequestParam MultipartFile uploadBlogImage, HttpServletRequest request) {
-        //https://www.cnblogs.com/zincredible/p/9060663.html
-        return "";
+        return blogService.setOtherInformation(informationName, uploadBlogImage, request);
     }
 }

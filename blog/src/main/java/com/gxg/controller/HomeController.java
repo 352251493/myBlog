@@ -1,9 +1,7 @@
 package com.gxg.controller;
 
-import com.gxg.entities.Blog;
-import com.gxg.entities.Label;
-import com.gxg.entities.ShortWords;
-import com.gxg.entities.User;
+import com.gxg.entities.*;
+import com.gxg.service.ArticleService;
 import com.gxg.service.BlogService;
 import com.gxg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,9 @@ public class HomeController {
     @Autowired
     private BlogService blogService;
 
+    @Autowired
+    private ArticleService articleService;
+
     @GetMapping("/")
     public String home(Model model, HttpServletRequest request) {
         model.addAttribute("pageName", "首页");
@@ -52,6 +53,8 @@ public class HomeController {
         }
         int shortWordsCount = blogService.getSaveShortWordsCount();
         model.addAttribute("shortWordsCount", shortWordsCount);
+        List<Article> articleList = articleService.getAllArticleLately();
+        model.addAttribute("articleList", articleList);
         return "/index.html";
     }
 }

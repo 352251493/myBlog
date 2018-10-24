@@ -3,6 +3,7 @@ package com.gxg.service;
 import com.gxg.entities.Blog;
 import com.gxg.entities.Label;
 import com.gxg.entities.ShortWords;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -99,4 +100,14 @@ public interface BlogService {
      * @author 郭欣光
      */
     public String setBaseInformation(String ownerName, String ownerIntroduction, String ownerGithub, String ownerEmail, HttpServletRequest request);
+
+    /**
+     * 设置博客其他信息业务处理
+     * @param informationName 其他信息名称
+     * @param uploadBlogImage 图片
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String setOtherInformation(String informationName, MultipartFile uploadBlogImage, HttpServletRequest request);
 }

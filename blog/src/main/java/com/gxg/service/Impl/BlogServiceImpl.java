@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -83,6 +84,8 @@ public class BlogServiceImpl implements BlogService {
     @Value("${blog,shortWords.count}")
     private int blogShortWordsCount;
 
+    private final String blogInformationBaseUrl = "/blog_resource";
+
     /**
      * 获得博客相关信息
      * @param request 用户请求信息
@@ -94,6 +97,7 @@ public class BlogServiceImpl implements BlogService {
         ServletContext servletContext = request.getServletContext();
 //        HttpSession session = request.getSession();
         Blog blog = null;
+        Random random = new Random();
         if (servletContext.getAttribute("blog") == null) {
             if (blogDao.getBlogNumber() != 0) {
                 blog = blogDao.getBlog();
@@ -107,7 +111,7 @@ public class BlogServiceImpl implements BlogService {
                             blogBaseDir += "/";
                         }
                         if (blogLogoDir.length() >= blogBaseDir.length()) {
-                            String logoSrc = blogLogoDir.substring(blogBaseDir.length() -  1) + blogLogoName + "." + fileType;
+                            String logoSrc = blogInformationBaseUrl + blogLogoDir.substring(blogBaseDir.length() -  1) + blogLogoName + "." + fileType + "?noCache=" + random.nextDouble();
                             blog.setLogo(logoSrc);
                         } else {
                             blog.setLogo(null);
@@ -126,7 +130,7 @@ public class BlogServiceImpl implements BlogService {
                             blogBaseDir += "/";
                         }
                         if (blogLogoIcoDir.length() >= blogBaseDir.length()) {
-                            String logoIcoSrc = blogLogoIcoDir.substring(blogBaseDir.length() -  1) + blogLogoIcoName + "." + fileType;
+                            String logoIcoSrc = blogInformationBaseUrl + blogLogoIcoDir.substring(blogBaseDir.length() -  1) + blogLogoIcoName + "." + fileType + "?noCache=" + random.nextDouble();
                             blog.setLogoIco(logoIcoSrc);
                         } else {
                             blog.setLogoIco(null);
@@ -145,7 +149,7 @@ public class BlogServiceImpl implements BlogService {
                             blogBaseDir += "/";
                         }
                         if (blogOwnerHeadImgDir.length() >= blogBaseDir.length()) {
-                            String ownerHeadImgSrc = blogOwnerHeadImgDir.substring(blogBaseDir.length() -  1) + blogOwnerHeadImgName + "." + fileType;
+                            String ownerHeadImgSrc = blogInformationBaseUrl + blogOwnerHeadImgDir.substring(blogBaseDir.length() -  1) + blogOwnerHeadImgName + "." + fileType + "?noCache=" + random.nextDouble();
                             blog.setOwnerHeadImg(ownerHeadImgSrc);
                         } else {
                             blog.setOwnerHeadImg(null);
@@ -164,7 +168,7 @@ public class BlogServiceImpl implements BlogService {
                             blogBaseDir += "/";
                         }
                         if (blogOwnerQqImgDir.length() >= blogBaseDir.length()) {
-                            String ownerQqImgSrc = blogOwnerQqImgDir.substring(blogBaseDir.length() -  1) + blogOwnerQqImgName + "." + fileType;
+                            String ownerQqImgSrc = blogInformationBaseUrl + blogOwnerQqImgDir.substring(blogBaseDir.length() -  1) + blogOwnerQqImgName + "." + fileType + "?noCache=" + random.nextDouble();
                             blog.setOwnerQqImg(ownerQqImgSrc);
                         } else {
                             blog.setOwnerQqImg(null);
@@ -183,7 +187,7 @@ public class BlogServiceImpl implements BlogService {
                             blogBaseDir += "/";
                         }
                         if (blogOwnerWeiboImgDir.length() >= blogBaseDir.length()) {
-                            String ownerWeiboImgSrc = blogOwnerWeiboImgDir.substring(blogBaseDir.length() -  1) + blogOwnerWeiboImgName + "." + fileType;
+                            String ownerWeiboImgSrc = blogInformationBaseUrl + blogOwnerWeiboImgDir.substring(blogBaseDir.length() -  1) + blogOwnerWeiboImgName + "." + fileType + "?noCache=" + random.nextDouble();
                             blog.setOwnerWeiboImg(ownerWeiboImgSrc);
                         } else {
                             blog.setOwnerWeiboImg(null);
@@ -202,7 +206,7 @@ public class BlogServiceImpl implements BlogService {
                             blogBaseDir += "/";
                         }
                         if (blogOwnerWeixinImgDir.length() >= blogBaseDir.length()) {
-                            String ownerWeixinImgSrc = blogOwnerWeixinImgDir.substring(blogBaseDir.length() -  1) + blogOwnerWeixinImgName + "." + fileType;
+                            String ownerWeixinImgSrc = blogInformationBaseUrl + blogOwnerWeixinImgDir.substring(blogBaseDir.length() -  1) + blogOwnerWeixinImgName + "." + fileType + "?noCache=" + random.nextDouble();
                             blog.setOwnerWeixinImg(ownerWeixinImgSrc);
                         } else {
                             blog.setOwnerWeixinImg(null);
@@ -573,6 +577,148 @@ public class BlogServiceImpl implements BlogService {
                     }
                 } catch (Exception e) {
                     content = "博客信息写入数据库失败！";
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 设置博客其他信息业务处理
+     *
+     * @param informationName 其他信息名称
+     * @param uploadBlogImage 图片
+     * @param request         用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String setOtherInformation(String informationName, MultipartFile uploadBlogImage, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "设置失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或者用户登录信息过期，请刷新页面重新登陆后再次尝试！";
+        } else if (blogDao.getBlogNumber() == 0) {
+            content = "您的博客基础信息尚未设置，请先设置博客基础信息后再设置其他信息！";
+        } else if (informationName == null || informationName.length() == 0 || "".equals(informationName)) {
+            content = "请求不符合要求！";
+        } else if (!"logo-ico".equals(informationName) && !"logo".equals(informationName) && !"head-img".equals(informationName) && !"my-qq".equals(informationName) && !"my-weibo".equals(informationName) && !"my-weixin".equals(informationName)) {
+            content = "请求不符合要求！";
+        } else if (uploadBlogImage == null) {
+            content = "请选择要上传的图片！";
+        } else {
+            boolean isImage = true;
+            try {
+                if (!FileUtil.isImage(uploadBlogImage)) {
+                    isImage = false;
+                    content = "上传的文件必须是图片类型！";
+                }
+            } catch (Exception e) {
+                isImage = false;
+                content = "判断文件是否合法时系统异常！";
+            }
+            if (isImage) {
+                String uploadBlogImageName = uploadBlogImage.getOriginalFilename();//上传图片的名称
+                String uploadBlogImageType = uploadBlogImageName.substring(uploadBlogImageName.lastIndexOf(".") + 1);//上传图片的后缀类型
+                if (!FileUtil.isImageByType(uploadBlogImageType)) {
+                    content = "上传的文件必须是图片类型！";
+                } else if (FileUtil.getFileSize(uploadBlogImage) > 50 * 1024 * 1024) {
+                    content = "图片大小不能超过50MB！";
+                } else{
+                    Blog blog = blogDao.getBlog();
+                    String uploadUrl = null;
+                    String uploadImageName = null;
+                    String oldImageName = null;
+                    if (blogLogoDir.lastIndexOf("/") != blogLogoDir.length() - 1) {
+                        blogLogoDir += "/";
+                    }
+                    if (blogLogoIcoDir.lastIndexOf("/") != blogLogoIcoDir.length() - 1) {
+                        blogLogoIcoDir += "/";
+                    }
+                    if (blogOwnerHeadImgDir.lastIndexOf("/") != blogOwnerHeadImgDir.length() - 1) {
+                        blogOwnerHeadImgDir += "/";
+                    }
+                    if (blogOwnerQqImgDir.lastIndexOf("/") != blogOwnerQqImgDir.length() - 1) {
+                        blogOwnerQqImgDir += "/";
+                    }
+                    if (blogOwnerWeiboImgDir.lastIndexOf("/") != blogOwnerWeiboImgDir.length() - 1) {
+                        blogOwnerWeiboImgDir += "/";
+                    }
+                    if (blogOwnerWeixinImgDir.lastIndexOf("/") != blogOwnerWeixinImgDir.length() - 1) {
+                        blogOwnerWeixinImgDir += "/";
+                    }
+                    switch (informationName) {
+                        case "logo-ico":
+                            oldImageName = blog.getLogoIco();
+                            uploadUrl = blogLogoIcoDir;
+                            uploadImageName = blogLogoIcoName;
+                            blog.setLogoIco(uploadImageName + "." + uploadBlogImageType);
+                            break;
+                        case "logo":
+                            oldImageName = blog.getLogo();
+                            uploadUrl = blogLogoDir;
+                            uploadImageName = blogLogoName;
+                            blog.setLogo(uploadImageName + "." + uploadBlogImageType);
+                            break;
+                        case "head-img":
+                            oldImageName = blog.getOwnerHeadImg();
+                            uploadUrl = blogOwnerHeadImgDir;
+                            uploadImageName = blogOwnerHeadImgName;
+                            blog.setOwnerHeadImg(uploadImageName + "." + uploadBlogImageType);
+                            break;
+                        case "my-qq":
+                            oldImageName = blog.getOwnerQqImg();
+                            uploadUrl = blogOwnerQqImgDir;
+                            uploadImageName = blogOwnerQqImgName;
+                            blog.setOwnerQqImg(uploadImageName + "." + uploadBlogImageType);
+                            break;
+                        case "my-weibo":
+                            oldImageName = blog.getOwnerWeiboImg();
+                            uploadUrl = blogOwnerWeiboImgDir;
+                            uploadImageName = blogOwnerWeiboImgName;
+                            blog.setOwnerWeiboImg(uploadImageName + "." + uploadBlogImageType);
+                            break;
+                        case "my-weixin":
+                            oldImageName = blog.getOwnerWeixinImg();
+                            uploadUrl = blogOwnerWeixinImgDir;
+                            uploadImageName = blogOwnerWeixinImgName;
+                            blog.setOwnerWeixinImg(uploadImageName + "." + uploadBlogImageType);
+                            break;
+                    }
+                    if (uploadImageName == null || uploadUrl == null) {
+                        content = "请求不符合要求！";
+                    } else {
+                        JSONObject uploadFileResult = FileUtil.uploadFile(uploadBlogImage, uploadImageName + "." + uploadBlogImageType, uploadUrl);
+                        if ("false".equals(uploadFileResult.getString("status"))) {
+                            content = "设置其他信息出错，错误原因：" + uploadFileResult.getString("content");
+                        } else {
+                            ServletContext servletContext = request.getServletContext();
+                            servletContext.setAttribute("blog", null);
+                            if (oldImageName != null && (uploadImageName + "." + uploadBlogImageType).toLowerCase().equals(oldImageName.toLowerCase())) {
+                                status = "true";
+                                content = "设置成功！";
+                            } else {
+                                try {
+                                    blogDao.updateBlogByOwnerName(blog, blog.getOwnerName());
+                                    status = "true";
+                                    content = "设置成功！";
+                                } catch (Exception e) {
+                                    content = "设置失败，操作数据库失败！";
+                                }
+                                if ("true".equals(status)) {
+                                    if (oldImageName != null) {
+                                        System.out.println("删除原图片结果：" + FileUtil.deleteFile(uploadUrl + oldImageName).toString());
+                                    }
+                                } else {
+                                    System.out.println("删除刚上传图片结果：" + FileUtil.deleteFile(uploadUrl + uploadImageName + "." + uploadBlogImageType).toString());
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

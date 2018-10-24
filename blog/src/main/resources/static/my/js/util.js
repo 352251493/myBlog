@@ -218,7 +218,9 @@ function setOtherInformation() {
     var fileType =  filePath[filePath.length - 1];
     if (informationName == null || informationName == "" || informationName.length == 0) {
         openAlert("请求不符合要求！");
-    } else if (file == null) {
+    } else if (informationName != "logo-ico" && informationName != "logo" && informationName != "head-img" && informationName != "my-qq" && informationName != "my-weibo" && informationName != "my-weixin") {
+        openAlert("请求不符合要求！");
+    }else if (file == null) {
         openAlert("请选择要上传的图片！");
     } else if (fileType != "bmf" && fileType != "png" && fileType != "gif" && fileType != "jpg" && fileType != "jpeg") {
         openAlert("上传的文件必须为图片类型！");
@@ -245,11 +247,12 @@ function setOtherInformation() {
         xhr.upload.addEventListener('progress', uploadBlogImageProgressFunction, false);
         xhr.addEventListener("load", uploadBlogImageComplete, false);
         xhr.addEventListener("error", uploadBlogImageFailed, false);
+        xhr.send(formData);
     }
 }
 
 function uploadBlogImageProgressFunction(evt) {
-    debugger;
+    // debugger;
     if (evt.lengthComputable) {
         var completePercent = Math.round(evt.loaded / evt.total * 100)
             + '%';
@@ -259,12 +262,21 @@ function uploadBlogImageProgressFunction(evt) {
 }
 
 function uploadBlogImageComplete(evt) {
-    alert(evt.target.responseText);
-    window.location.reload();
+    var result = JSON.parse(evt.target.responseText);
+    if (result.status == "true") {
+        window.location.reload();
+    } else {
+        $("#close-upload-file-process-model").click();
+        if (result.hasOwnProperty("message")) {
+            openAlert("上传失败！（错误码：" + result.status + "， 错误类型：" + result.error + ")");
+        } else {
+            openAlert(result.content);
+        }
+    }
 }
 
 function uploadBlogImageFailed(evt) {
     $("#close-upload-file-process-model").click();
-    alert(evt.target.responseText);
-    openAlert("上传失败！");
+    console.log(evt.target.responseText);
+    openAlert("上传失败！原因：" + evt.target.responseText);
 }
