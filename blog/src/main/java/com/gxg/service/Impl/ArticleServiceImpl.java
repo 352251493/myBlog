@@ -1,15 +1,22 @@
 package com.gxg.service.Impl;
 
+import com.gxg.controller.ArticleController;
 import com.gxg.dao.ArticleDao;
 import com.gxg.dao.UserDao;
 import com.gxg.entities.Article;
 import com.gxg.entities.User;
 import com.gxg.service.ArticleService;
 import com.gxg.utils.FileUtil;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
 
@@ -74,5 +81,126 @@ public class ArticleServiceImpl implements ArticleService {
             }
             return articleList;
         }
+    }
+
+    /**
+     * 文章发表业务处理
+     *
+     * @param articleTitle    文章标题
+     * @param articleAbstract 文章摘要
+     * @param articleLabel    文章标签
+     * @param articleImg      文章图片
+     * @param articleContent  文章内容
+     * @param request         用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String publish(String articleTitle, String articleAbstract, String articleLabel, MultipartFile articleImg, String articleContent, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "发布失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (articleTitle == null || articleTitle.length() == 0 || "".equals(articleTitle)) {
+            content = "标题不能为空！";
+        } else if (articleAbstract == null || articleAbstract.length() == 0 || "".equals(articleAbstract)) {
+            content = "摘要不能为空！";
+        } else if (articleLabel == null || articleLabel.length() == 0 || "".equals(articleLabel)) {
+            content = "请选择类别！";
+        } else if (articleContent == null || articleContent.length() == 0 || "".equals(articleContent)) {
+            content = "请输入正文！";
+        } else if (articleTitle.length() > 100) {
+            content = "标题不能超过100字符！";
+        } else if (articleAbstract.length() > 200) {
+            content = "摘要不能超过200字符！";
+        } else {
+            boolean isImg = true;
+            try {
+                if (!FileUtil.isImage(articleImg)) {
+                    isImg = false;
+                    content = "封面图片必须是图片类型！";
+                }
+            } catch (Exception e) {
+                isImg = false;
+                content = "系统在验证图片类型时出错！";
+            }
+            if (isImg) {
+                String articleImgName = articleImg.getOriginalFilename();//上传图片的名称
+                String articleImgType = articleImgName.substring(articleImgName.lastIndexOf(".") + 1);//上传图片的后缀类型
+                if (!FileUtil.isImageByType(articleImgType)) {
+                    content = "封面图片必须是图片类型！";
+                } else if (FileUtil.getFileSize(articleImg) > 50 * 1024 * 1024) {
+                    content = "图片大小不能超过50MB！";
+                } else {
+                    Article article = new Article();
+                    Timestamp time = new Timestamp(System.currentTimeMillis());
+                    String timeString = time.toString();
+                    String id = timeString.split(" ")[0].split("-")[0] + timeString.split(" ")[0].split("-")[1] + timeString.split(" ")[0].split("-")[2] + timeString.split(" ")[1].split(":")[0] + timeString.split(" ")[1].split(":")[1] + timeString.split(" ")[1].split(":")[2].split("\\.")[0] + timeString.split(" ")[1].split(":")[2].split("\\.")[1];//注意，split是按照正则表达式进行分割，.在正则表达式中为特殊字符，需要转义。
+                    while (articleDao.getCountById(id) != 0) {
+                        long idLong = Long.parseLong(id);
+                        Random random = new Random();
+                        idLong += random.nextInt(100);
+                        id = idLong + "";
+                        if (id.length() > 17) {
+                            id = id.substring(0, 17);
+                        }
+                    }
+                    String imgUrl = id + "." + articleImgType;
+                    if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
+                        articleDir += "/";
+                    }
+                    JSONObject uploadImgResult = FileUtil.uploadFile(articleImg, imgUrl, articleDir);
+                    if ("true".equals(uploadImgResult.getString("status"))) {
+                        article.setImgUrl(imgUrl);
+                        String articleUrl = id + ".html";
+                        JSONObject writeFileResult = FileUtil.writeFile(articleDir, articleUrl, articleContent);
+                        if ("true".equals(writeFileResult.getString("status"))) {
+                            article.setArticleUrl(articleUrl);
+                            article.setId(id);
+                            article.setTitle(articleTitle);
+                            article.setArticleAbstract(articleAbstract);
+                            article.setLabel(articleLabel);
+                            article.setReadNumber(0);
+                            article.setCreateTime(time);
+                            article.setModificationTime(time);
+                            User user = (User)session.getAttribute("user");
+                            article.setAuthor(user.getId());
+                            try {
+                                if (articleDao.createArticle(article) == 0) {
+                                    content = "添加数据库失败！";
+                                    JSONObject deleteArticleResult = FileUtil.deleteFile(articleDir + articleUrl);
+                                    if ("false".equals(deleteArticleResult.getString("status"))) {
+                                        System.out.println("发表文章时删除文章出错，原因是：" + deleteArticleResult.getString("content"));
+                                    }
+                                    JSONObject deleteImgResult = FileUtil.deleteFile(articleDir + imgUrl);
+                                    if ("false".equals(deleteImgResult.getString("status"))) {
+                                        System.out.println("发表文章时删除图片出错，原因是：" + deleteImgResult.getString("content"));
+                                    }
+                                } else {
+                                    status = "true";
+                                    content = "发表成功！";
+                                }
+                            } catch (Exception e) {
+                                content = "添加数据库失败！";
+                                System.out.println(e);
+                            }
+                        } else {
+                            content = "发表文章出错，错误原因：" + writeFileResult.getString("content");
+                            JSONObject deleteImgResult = FileUtil.deleteFile(articleDir + imgUrl);
+                            if ("false".equals(deleteImgResult.getString("status"))) {
+                                System.out.println("发表文章时删除图片出错，错误原因：" + deleteImgResult.getString("content"));
+                            }
+                        }
+                    } else {
+                        content = "发表文章出错，错误原因：" + uploadImgResult.getString("content");
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
     }
 }

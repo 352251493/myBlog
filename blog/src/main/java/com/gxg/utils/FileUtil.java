@@ -139,4 +139,40 @@ public class FileUtil {
         result.accumulate("content", content);
         return result;
     }
+
+    /**
+     * 将内容写入文件
+     * @param path 文件路径
+     * @param name 文件名
+     * @param content 文件内容
+     * @return 写入结果
+     * @author 郭欣光
+     */
+    public static JSONObject writeFile(String path, String name, String content) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String resultContent = "写入文件出错！";
+        try {
+            File fileDir = new File(path);
+            if(!fileDir.exists()) {
+                fileDir.mkdirs();
+            }
+            File file = new File(path + name);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            byte by[] = content.getBytes();
+            fileOutputStream.write(by);
+            fileOutputStream.close();
+            status = "true";
+            resultContent = "写入文件成功！";
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+            resultContent = "写入文件出错：" + e.getMessage();
+        } catch (IOException e) {
+            System.out.println(e);
+            resultContent = "写入文件出错：" + e.getMessage();
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", resultContent);
+        return result;
+    }
 }

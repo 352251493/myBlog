@@ -1,0 +1,77 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title th:if="${blog} == null or ${blog.ownerName} == null">随遇而安.的个人博客</title>
+  <title th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName} + '的个人博客'">随遇而安.的个人博客</title>
+
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+  <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
+  <meta name="apple-mobile-web-app-title" th:content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+
+  <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+  <!--
+  <link rel="canonical" href="http://www.example.com/">
+  -->
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+<header>
+  <div class="log-header">
+      <h1><a href="/">出错啦！</a> </h1>
+  </div>
+</header>
+
+<div class="log"> 
+  <div class="am-g">
+  <div class="am-u-lg-3 am-u-md-6 am-u-sm-8 am-u-sm-centered log-content">
+    <h1 class="log-title am-animation-slide-top">出错啦！</h1>
+    <br>
+	<h3>用户尚未登录或登录信息过期，请登录后在访问！</h3>
+	<p class="am-animation-slide-bottom log-animation-delay"><a href="/">返回首页</a></p>
+  </div>
+  </div>
+  <footer class="log-footer" th:include="/html_templates/footer.html :: footer"></footer>
+</div>
+
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery.min.js"></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

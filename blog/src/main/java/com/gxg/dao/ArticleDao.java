@@ -24,4 +24,20 @@ public interface ArticleDao {
      * @author 郭欣光
      */
     public List<Article> getArticleByLimitOrderByModificationTime(int start, int length);
+
+    /**
+     * 根据id获得文章数量
+     * @param id 文章id
+     * @return 文章数量
+     * @author 郭欣光
+     */
+    public int getCountById(String id);
+
+    /**
+     * 创建文章
+     * @param article 文章信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int createArticle(Article article);
 }

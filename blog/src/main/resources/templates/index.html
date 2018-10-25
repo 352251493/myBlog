@@ -11,15 +11,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="Cache-Control" content="no-siteapp"/>
   <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
-  <link rel="icon" type="image/png" href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="mobile-web-app-capable" content="yes">
   <!--<link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png">-->
   <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
-  <link rel="icon" sizes="192x192" href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
-  <meta name="apple-mobile-web-app-title" content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
+  <meta name="apple-mobile-web-app-title" th:content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
   <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
   <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
   <meta name="msapplication-TileColor" content="#0e90d2">
@@ -106,7 +106,7 @@
                 <div class="am-vertical-align">
                     <div class="am-vertical-align-middle">
                         <h1 th:if="${user} == null">博主太懒，什么都没有留下哦~</h1>
-                        <h1 th:if="${user} != null">暂时还没有文章哦~赶快<a>点击</a>写点什么吧！</h1>
+                        <h1 th:if="${user} != null">暂时还没有文章哦~赶快<a href="/article/publish">点击</a>写点什么吧！</h1>
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 <span><a href="" class="blog-color" th:utext="${article.label} + ' &nbsp;'">学习感悟 &nbsp;</a></span>
                 <span th:utext="${article.author} + '&nbsp;'" th:if="${article.author} != null"> 随遇而安。 &nbsp;</span>
                 <span th:if="${article.author} == null"> 随遇而安。 &nbsp;</span>
-                <span th:text="${article.modificationTime}">----</span>
+                <span th:text="${#strings.substringBefore(article.modificationTime, '.')}">----</span>
                 <h1><a th:href="${article.articleUrl}" th:text="${article.title}">------</a></h1>
                 <p th:text="${article.articleAbstract}">我们一直在坚持着，不是为了改变这个世界，而是希望不被这个世界所改变。
                 </p>

@@ -47,4 +47,32 @@ public class ArticleDaoImpl implements ArticleDao {
         List<Article> articleList = jdbcTemplate.query(sql, new ArticleRowMapper(), start, length);
         return articleList;
     }
+
+    /**
+     * 根据id获得文章数量
+     *
+     * @param id 文章id
+     * @return 文章数量
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountById(String id) {
+        String sql = "select count(1) from article where id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return rowCount;
+    }
+
+    /**
+     * 创建文章
+     *
+     * @param article 文章信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int createArticle(Article article) {
+        String sql = "insert into article(id, title, abstract, label, img_url, article_url, read_number, create_time, modification_time, author) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, article.getId(), article.getTitle(), article.getArticleAbstract(), article.getLabel(), article.getImgUrl(), article.getArticleUrl(), article.getReadNumber(), article.getCreateTime(), article.getModificationTime(), article.getAuthor());
+        return changeCount;
+    }
 }

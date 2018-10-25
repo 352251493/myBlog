@@ -11,14 +11,14 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="Cache-Control" content="no-siteapp"/>
   <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
-  <link rel="icon" type="image/png" href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
-  <link rel="icon" sizes="192x192" href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
-  <meta name="apple-mobile-web-app-title" content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
+  <meta name="apple-mobile-web-app-title" th:content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
   <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
   <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
   <meta name="msapplication-TileColor" content="#0e90d2">
