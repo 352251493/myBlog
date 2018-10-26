@@ -5,8 +5,11 @@ import com.gxg.dao.rowmapper.ArticleRowMapper;
 import com.gxg.entities.Article;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -74,5 +77,35 @@ public class ArticleDaoImpl implements ArticleDao {
         String sql = "insert into article(id, title, abstract, label, img_url, article_url, read_number, create_time, modification_time, author) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int changeCount = jdbcTemplate.update(sql, article.getId(), article.getTitle(), article.getArticleAbstract(), article.getLabel(), article.getImgUrl(), article.getArticleUrl(), article.getReadNumber(), article.getCreateTime(), article.getModificationTime(), article.getAuthor());
         return changeCount;
+    }
+
+    /**
+     * 根据label获取文章个数
+     *
+     * @param label 标签
+     * @return 文章个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountByLabel(String label) {
+        String sql = "select count(1) from article where label=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, label);
+        return rowCount;
+    }
+
+    /**
+     * 根据文章标签和起始位置获得按照修改时间排序后指定个数的文章列表
+     *
+     * @param label  文章标签
+     * @param start  起始位置
+     * @param length 文章个数
+     * @return 文章列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Article> getArticleByLabelAndLLimitOrderByModificationTime(String label, int start, int length) {
+        String sql = "select * from article where label=? order by modification_time desc limit ?, ?";
+        List<Article> articleList = jdbcTemplate.query(sql, new ArticleRowMapper(), label, start, length);
+        return articleList;
     }
 }

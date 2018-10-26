@@ -32,4 +32,21 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public String publish(String articleTitle, String articleAbstract, String articleLabel, MultipartFile articleImg, String articleContent, HttpServletRequest request);
+
+    /**
+     * 根据标签和页码获取文章列表
+     * @param label 文章标签
+     * @param page 页码
+     * @return 文章列表
+     * @author 郭欣光
+     */
+    public List<Article> getArticleList(String label, String page);
+
+    /**
+     * 根据文章标签获得文章总页数
+     * @param label 文章标签
+     * @return 文章总页数
+     * @author 郭欣光
+     */
+    public int getArticleAllPageNumberByLabel(String label);
 }

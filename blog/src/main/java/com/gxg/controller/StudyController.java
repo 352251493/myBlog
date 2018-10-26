@@ -16,13 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
+ * 学习感悟相关请求接收响应
  * @author 郭欣光
- * @date 2018/10/15 11:29
+ * @date 2018/10/26 14:50
  */
 
 @Controller
-@RequestMapping(value = "/life")
-public class LifeController {
+@RequestMapping(value = "/study")
+public class StudyController {
 
     @Autowired
     private UserService userService;
@@ -34,12 +35,12 @@ public class LifeController {
     private ArticleService articleService;
 
     @RequestMapping(value = "")
-    public String life(Model model, HttpServletRequest request) {
+    public String study(Model model, HttpServletRequest request) {
         model = this.globelModelProcess(model, request);
-        List<Article> articleList = articleService.getArticleList("生活情感", "1");
+        List<Article> articleList = articleService.getArticleList("学习感悟", "1");
         model.addAttribute("articleList", articleList);
         model.addAttribute("pageNumber", 1);
-        int allPageNumber = articleService.getArticleAllPageNumberByLabel("生活情感");
+        int allPageNumber = articleService.getArticleAllPageNumberByLabel("学习感悟");
         model.addAttribute("allPageNumber", allPageNumber);
         if (allPageNumber > 1) {
             model.addAttribute("nextPageNumber", 2);
@@ -48,28 +49,28 @@ public class LifeController {
     }
 
     @GetMapping(value = "/page/{pageNumber}")
-    public String life(Model model, HttpServletRequest request, HttpServletResponse response, @PathVariable String pageNumber) {
+    public String study(Model model, HttpServletRequest request, HttpServletResponse response, @PathVariable String pageNumber) {
         model = this.globelModelProcess(model, request);
         int pageIntNumber = 0;
         try {
             pageIntNumber = Integer.parseInt(pageNumber);
         } catch (Exception e) {
             try {
-                response.sendRedirect("/life/");
+                response.sendRedirect("/study/");
             } catch (Exception e1) {
-                System.out.println("访问生活情感page超页时：" + e1);
+                System.out.println("访问学习感悟page超页时：" + e1);
             }
         }
-        List<Article> articleList = articleService.getArticleList("生活情感", pageNumber);
+        List<Article> articleList = articleService.getArticleList("学习感悟", pageNumber);
         if (articleList == null && !"1".equals(pageNumber.trim())) {
             try {
-                response.sendRedirect("/life/");
+                response.sendRedirect("/study/");
             } catch (Exception e) {
-                System.out.println("访问生活情感page超页时：" + e);
+                System.out.println("访问学习感悟page超页时：" + e);
             }
         }
         model.addAttribute("pageNumber", pageIntNumber);
-        int allPageNumber = articleService.getArticleAllPageNumberByLabel("生活情感");
+        int allPageNumber = articleService.getArticleAllPageNumberByLabel("学习感悟");
         model.addAttribute("allPageNumber", allPageNumber);
         if (pageIntNumber > 1) {
             model.addAttribute("prePageNumber", pageIntNumber + 1);
@@ -81,7 +82,7 @@ public class LifeController {
     }
 
     private Model globelModelProcess(Model model, HttpServletRequest request) {
-        model.addAttribute("pageName", "生活情感");
+        model.addAttribute("pageName", "学习感悟");
         User user = userService.getLoginUser(request);
         if (user != null) {
             model.addAttribute("user", user);

@@ -46,6 +46,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private UserDao userDao;
 
+    @Value("${article.list.number}")
+    private int articleListNumber;
+
     /**
      * 获得最近几次的文章列表
      *
@@ -58,27 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
             return null;
         } else {
             List<Article> articleList = articleDao.getArticleByLimitOrderByModificationTime(0, articleAllLatelyNumber);
-            if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
-                articleDir += "/";
-            }
-            if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
-                blogBaseDir += "/";
-            }
-            if (articleDir.length() >= blogBaseDir.length()) {
-                Random random = new Random();
-                for (int i = 0; i < articleList.size(); i++) {
-                    Article article = articleList.get(i);
-                    if (article.getImgUrl() != null && FileUtil.fileExists(articleDir + article.getImgUrl())) {
-                        String imgUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + article.getImgUrl() + "?noCache=" + random.nextDouble();
-                        article.setImgUrl(imgUrl);
-                    }
-                    if (article.getArticleUrl() != null && FileUtil.fileExists(articleDir + article.getArticleUrl())) {
-                        String articleUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + article.getArticleUrl() + "?noCache=" + random.nextDouble();
-                        article.setArticleUrl(articleUrl);
-                    }
-                    articleList.set(i, article);
-                }
-            }
+            articleList = this.articleUrlProcess(articleList);
             return articleList;
         }
     }
@@ -202,5 +185,72 @@ public class ArticleServiceImpl implements ArticleService {
         result.accumulate("status", status);
         result.accumulate("content", content);
         return result.toString();
+    }
+
+    /**
+     * 根据标签和页码获取文章列表
+     *
+     * @param label 文章标签
+     * @param page  页码
+     * @return 文章列表
+     * @author 郭欣光
+     */
+    @Override
+    public List<Article> getArticleList(String label, String page) {
+        int pageNumber = 0;
+        try {
+            pageNumber = Integer.parseInt(page);
+        } catch (Exception e) {
+            return null;
+        }
+        if (pageNumber <= 0) {
+            return null;
+        }
+        if (articleDao.getCountByLabel(label) <= (pageNumber - 1) * articleListNumber) {
+            return null;
+        }
+        List<Article> articleList = articleDao.getArticleByLabelAndLLimitOrderByModificationTime(label, (pageNumber - 1) * articleListNumber, articleListNumber);
+        articleList = this.articleUrlProcess(articleList);
+        return articleList;
+    }
+
+    /**
+     * 根据文章标签获得文章总页数
+     *
+     * @param label 文章标签
+     * @return 文章总页数
+     * @author 郭欣光
+     */
+    @Override
+    public int getArticleAllPageNumberByLabel(String label) {
+        int articleCount = articleDao.getCountByLabel(label);
+        int allPageNumber = (articleCount % articleListNumber == 0) ? (articleCount / articleListNumber) : (articleCount / articleListNumber + 1);
+        allPageNumber = allPageNumber == 0 ? 1 : allPageNumber;
+        return allPageNumber;
+    }
+
+    private List<Article> articleUrlProcess(List<Article> articleList) {
+        if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
+            articleDir += "/";
+        }
+        if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
+            blogBaseDir += "/";
+        }
+        if (articleDir.length() >= blogBaseDir.length()) {
+            Random random = new Random();
+            for (int i = 0; i < articleList.size(); i++) {
+                Article article = articleList.get(i);
+                if (article.getImgUrl() != null && FileUtil.fileExists(articleDir + article.getImgUrl())) {
+                    String imgUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + article.getImgUrl() + "?noCache=" + random.nextDouble();
+                    article.setImgUrl(imgUrl);
+                }
+                if (article.getArticleUrl() != null && FileUtil.fileExists(articleDir + article.getArticleUrl())) {
+                    String articleUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + article.getArticleUrl() + "?noCache=" + random.nextDouble();
+                    article.setArticleUrl(articleUrl);
+                }
+                articleList.set(i, article);
+            }
+        }
+        return articleList;
     }
 }

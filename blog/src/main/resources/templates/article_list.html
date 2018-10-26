@@ -13,7 +13,6 @@
   <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
   <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="mobile-web-app-capable" content="yes">
-  <!--<link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png">-->
   <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
   <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,84 +24,81 @@
   <meta name="msapplication-TileColor" content="#0e90d2">
   <link rel="stylesheet" href="/assets/css/amazeui.min.css">
   <link rel="stylesheet" href="/assets/css/app.css">
-  <!-- <link rel="stylesheet" href="my/css/bootstrap.min.css"> -->
 </head>
 
 <body id="blog">
-
 <header class="am-g am-g-fixed blog-fixed blog-text-center blog-header" th:include="/html_templates/header.html :: header">
 </header>
 <hr>
-<!-- nav start -->
 <nav class="am-g am-g-fixed blog-fixed blog-nav" th:include="/html_templates/nav.html :: nav"></nav>
 <hr>
-<!-- nav end -->
+
 <!-- banner start -->
-<div class="am-g am-g-fixed blog-fixed am-u-sm-centered blog-article-margin">
+<!-- <div class="am-g am-g-fixed blog-fixed am-u-sm-centered blog-article-margin">
     <div data-am-widget="slider" class="am-slider am-slider-b1" data-am-slider='{&quot;controlNav&quot;:false}' >
     <ul class="am-slides">
       <li>
-            <img src="/assets/i/b1.jpg">
+            <img src="assets/i/b1.jpg">
             <div class="blog-slider-desc am-slider-desc ">
                 <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
+                    <span><a href="" class="blog-color">Article &nbsp;</a></span>               
                     <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
                     <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
                     </p>
                     <span class="blog-bor">2015/10/9</span>
-                    <br><br><br><br><br><br><br>
+                    <br><br><br><br><br><br><br>                
                 </div>
             </div>
       </li>
       <li>
-            <img src="/assets/i/b2.jpg">
+            <img src="assets/i/b2.jpg">
             <div class="am-slider-desc blog-slider-desc">
                 <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
+                    <span><a href="" class="blog-color">Article &nbsp;</a></span>               
                     <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
                     <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
                     </p>
-                    <span>2015/10/9</span>
+                    <span>2015/10/9</span>                
                 </div>
             </div>
       </li>
       <li>
-            <img src="/assets/i/b3.jpg">
+            <img src="assets/i/b3.jpg">
             <div class="am-slider-desc blog-slider-desc">
                 <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
+                    <span><a href="" class="blog-color">Article &nbsp;</a></span>               
                     <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
                     <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
                     </p>
-                    <span>2015/10/9</span>
+                    <span>2015/10/9</span>                
                 </div>
             </div>
       </li>
       <li>
-            <img src="/assets/i/b2.jpg">
+            <img src="assets/i/b2.jpg">
             <div class="am-slider-desc blog-slider-desc">
                 <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
+                    <span><a href="" class="blog-color">Article &nbsp;</a></span>               
                     <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
                     <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
                     </p>
-                    <span>2015/10/9</span>
+                    <span>2015/10/9</span>                
                 </div>
             </div>
       </li>
     </ul>
     </div>
-</div>
+</div> -->
 <!-- banner end -->
 
 <!-- content srart -->
 <div class="am-g am-g-fixed blog-fixed">
     <div class="am-u-md-8 am-u-sm-12" th:if="${articleList} == null">
         <article class="am-g blog-entry-article">
-            <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img">
+            <div class="am-u-lg-12 am-u-md-12 am-u-sm-12 am-u-sm-centered blog-entry-img">
                 <img src="/assets/i/f10.jpg" alt="" class="am-u-sm-12">
             </div>
-            <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">
+            <div class="am-u-lg-12 am-u-md-12 am-u-sm-12 blog-entry-text blog-text-center">
                 <div class="am-vertical-align">
                     <div class="am-vertical-align-middle">
                         <h1 th:if="${user} == null">博主太懒，什么都没有留下哦~</h1>
@@ -113,12 +109,13 @@
         </article>
     </div>
     <div class="am-u-md-8 am-u-sm-12" th:if="${articleList} != null">
-        <article class="am-g blog-entry-article" th:each="article : ${articleList}">
-            <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img">
+
+        <article class="am-g blog-entry-article" th:each="article, iterStat : ${articleList}">
+            <div class="am-u-lg-12 am-u-md-12 am-u-sm-12 am-u-sm-centered blog-entry-img" th:if="${iterStat.index} eq 0">
                 <img th:src="${article.imgUrl}" alt="" class="am-u-sm-12" th:if="${article.imgUrl} != null">
                 <img src="/assets/i/f10.jpg" alt="" class="am-u-sm-12" th:if="${article.imgUrl} == null">
             </div>
-            <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">
+            <div class="am-u-lg-12 am-u-md-12 am-u-sm-12 blog-entry-text blog-text-center" th:if="${iterStat.index} eq 0">
                 <span><a href="/life/" class="blog-color" th:utext="${article.label} + ' &nbsp;'" th:if="${article.label} eq '生活情感'">生活情感 &nbsp;</a></span>
                 <span><a href="/study/" class="blog-color" th:utext="${article.label} + ' &nbsp;'" th:if="${article.label} eq '学习感悟'">学习感悟 &nbsp;</a></span>
                 <span th:utext="${article.author} + '&nbsp;'" th:if="${article.author} != null"> 随遇而安。 &nbsp;</span>
@@ -129,6 +126,22 @@
                 </p>
                 <p><a href="" class="blog-continue">continue reading</a></p>
             </div>
+
+            <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img" th:if="${iterStat.index} ne 0">
+                <img th:src="${article.imgUrl}" alt="" class="am-u-sm-12" th:if="${article.imgUrl} != null">
+                <img src="/assets/i/f10.jpg" alt="" class="am-u-sm-12" th:if="${article.imgUrl} == null">
+            </div>
+            <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" th:if="${iterStat.index} ne 0">
+                <span><a href="/life/" class="blog-color" th:utext="${article.label} + ' &nbsp;'" th:if="${article.label} eq '生活情感'">生活情感 &nbsp;</a></span>
+                <span><a href="/study/" class="blog-color" th:utext="${article.label} + ' &nbsp;'" th:if="${article.label} eq '学习感悟'">学习感悟 &nbsp;</a></span>
+                <span th:utext="${article.author} + '&nbsp;'" th:if="${article.author} != null"> 随遇而安。 &nbsp;</span>
+                <span th:if="${article.author} == null"> 随遇而安。 &nbsp;</span>
+                <span th:text="${#strings.substringBefore(article.modificationTime, '.')}">----</span>
+                <h1><a th:href="${article.articleUrl}" th:text="${article.title}">------</a></h1>
+                <p th:text="${article.articleAbstract}">我们一直在坚持着，不是为了改变这个世界，而是希望不被这个世界所改变。
+                </p>
+                <p><a href="" class="blog-continue">continue</a></p>
+            </div>
         </article>
 
         <!--<article class="am-g blog-entry-article">-->
@@ -136,8 +149,8 @@
                 <!--<img src="/assets/i/f6.jpg" alt="" class="am-u-sm-12">-->
             <!--</div>-->
             <!--<div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">-->
-                <!--<span><a href="" class="blog-color">学习感悟&nbsp;</a></span>-->
-                <!--<span>随遇而安。 &nbsp;</span>-->
+                <!--<span><a href="" class="blog-color">article&nbsp;</a></span>-->
+                <!--<span>@amazeUI &nbsp;</span>-->
                 <!--<span>2015/10/9</span>-->
                 <!--<h1><a href="">世间所有的相遇，都是久别重逢。</a></h1>-->
                 <!--<p>你可以选择在原处不停地跟周遭不解的人解释你为何这么做，让他们理解你，你可以选择什么都不讲，自顾自往前走。-->
@@ -151,8 +164,8 @@
                 <!--<img src="/assets/i/f12.jpg" alt="" class="am-u-sm-12">-->
             <!--</div>-->
             <!--<div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">-->
-                <!--<span><a href="" class="blog-color">学习感悟&nbsp;</a></span>-->
-                <!--<span>随遇而安。</span>-->
+                <!--<span><a href="" class="blog-color">article&nbsp;</a></span>-->
+                <!--<span>@amazeUI</span>-->
                 <!--<span>2015/10/9</span>-->
                 <!--<h1><a href="">陌上花开，可缓缓归矣。</a></h1>-->
                 <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。我们就在骑楼下躲雨，看绿色的邮筒孤独地站在街的对面。-->
@@ -166,8 +179,8 @@
                 <!--<img src="/assets/i/f22.jpg" alt="" class="am-u-sm-12">-->
             <!--</div>-->
             <!--<div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">-->
-                <!--<span><a href="" class="blog-color">学习感悟&nbsp;</a></span>-->
-                <!--<span>随遇而安。</span>-->
+                <!--<span><a href="" class="blog-color">article&nbsp;</a></span>-->
+                <!--<span>@amazeUI</span>-->
                 <!--<span>2015/10/9</span>-->
                 <!--<h1><a href="">爱自己是终生浪漫的开始</a></h1>-->
                 <!--<p>the whole of life becomes an act of letting go, but what always hurts the most is not taking a moment to say goodbye-->
@@ -181,8 +194,8 @@
                 <!--<img src="/assets/i/f18.jpg" alt="" class="am-u-sm-12">-->
             <!--</div>-->
             <!--<div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">-->
-                <!--<span><a href="" class="blog-color">学习感悟&nbsp;</a></span>-->
-                <!--<span> 随遇而安。 &nbsp;</span>-->
+                <!--<span><a href="" class="blog-color">article&nbsp;</a></span>-->
+                <!--<span> @amazeUI &nbsp;</span>-->
                 <!--<span>2015/10/9</span>-->
                 <!--<h1><a href="">My dear amazeUI, Hello </a></h1>-->
                 <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。我们就在骑楼下躲雨，看绿色的邮筒孤独地站在街的对面。-->
@@ -196,11 +209,11 @@
                 <!--<img src="/assets/i/f20.jpg" alt="" class="am-u-sm-12">-->
             <!--</div>-->
             <!--<div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">-->
-                <!--<span><a href="" class="blog-color">学习感悟&nbsp;</a></span>-->
-                <!--<span> 随遇而安。 &nbsp;</span>-->
+                <!--<span><a href="" class="blog-color">article&nbsp;</a></span>-->
+                <!--<span> @amazeUI &nbsp;</span>-->
                 <!--<span>2015/10/9</span>-->
                 <!--<h1><a href="">My way or the highway</a></h1>-->
-                <!--<p>A big wind rises， clouds are driven away. Home am Inow the world is under my sway. Where are brave men to guard the four frontiers today！-->
+                <!--<p>A big wind rises， clouds are driven away. Home am Inow the world is under my sway. Where are brave men to guard the four frontiers today！ -->
                 <!--</p>-->
                 <!--<p><a href="" class="blog-continue">continue reading</a></p>-->
             <!--</div>-->
@@ -211,8 +224,8 @@
                 <!--<img src="/assets/i/f19.jpg" alt="" class="am-u-sm-12">-->
             <!--</div>-->
             <!--<div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text">-->
-                <!--<span><a href="" class="blog-color">学习感悟&nbsp;</a></span>-->
-                <!--<span> 随遇而安。 &nbsp;</span>-->
+                <!--<span><a href="" class="blog-color">article&nbsp;</a></span>-->
+                <!--<span> @amazeUI &nbsp;</span>-->
                 <!--<span>2015/10/9</span>-->
                 <!--<h1><a href="">一想到你，我这张丑脸上就泛起微笑</a></h1>-->
                 <!--<p>那一天我二十一岁，在我一生的黄金时代。我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云。-->
@@ -220,11 +233,15 @@
                 <!--<p><a href="" class="blog-continue">continue reading</a></p>-->
             <!--</div>-->
         <!--</article>-->
-
-        <ul class="am-pagination">
-  <!-- <li class="am-pagination-prev"><a href="">&laquo; Prev</a></li> -->
-  <!-- <li class="am-pagination-next"><a href="">Next &raquo;</a></li> -->
-            <li class="am-pagination-next"><a href="/life/">查看更多 &raquo;</a></li>
+        
+        <ul class="am-pagination am-pagination-right">
+            <li th:if="${prePageNumber} == null" class="am-disabled"><a href="#">&laquo; 上一页</a></li>
+            <li th:if="${prePageNumber} != null and ${pageName} eq '生活情感'"><a th:href="'/life/page/' + ${prePageNumber}">&laquo; 上一页</a></li>
+            <li th:if="${prePageNumber} != null and ${pageName} eq '学习感悟'"><a th:href="'/study/page/' + ${prePageNumber}">&laquo; 上一页</a></li>
+            <li class="am-disabled"><a href="#" th:text="${pageNumber} + '/' + ${allPageNumber}">1/1</a></li>
+            <li th:if="${nextPageNumber} == null" class="am-disabled"><a href="#">下一页 &raquo;</a></li>
+            <li th:if="${nextPageNumber} != null and ${pageName} eq '生活情感'"><a th:href="'/life/page/' + ${nextPageNumber}" >下一页 &raquo;</a></li>
+            <li th:if="${nextPageNumber} != null and ${pageName} eq '学习感悟'"><a th:href="'/study/page/' + ${nextPageNumber}">下一页 &raquo;</a></li>
         </ul>
     </div>
 
@@ -233,13 +250,15 @@
 <!-- content end -->
 
 
+<footer class="blog-footer" th:include="/html_templates/footer.html :: footer"></footer>
 
-  <footer class="blog-footer" th:include="/html_templates/footer.html :: footer"></footer>
 <div th:include="/html_templates/login.html :: login"></div>
 <div th:include="/html_templates/alert.html :: alert"></div>
 <div th:include="/html_templates/label.html :: label"></div>
 <div th:include="/html_templates/short_words.html :: short-words"></div>
 <div th:include="/html_templates/blog_set.html :: blog-set"></div>
+
+
 
 
 
@@ -256,5 +275,6 @@
 <script src="/my/js/util.js"></script>
 <script src="/my/js/label.js"></script>
 <script src="/my/js/short_words.js"></script>
+<!-- <script src="assets/js/app.js"></script> -->
 </body>
 </html>

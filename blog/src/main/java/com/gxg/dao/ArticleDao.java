@@ -40,4 +40,22 @@ public interface ArticleDao {
      * @author 郭欣光
      */
     public int createArticle(Article article);
+
+    /**
+     * 根据label获取文章个数
+     * @param label 标签
+     * @return 文章个数
+     * @author 郭欣光
+     */
+    public int getCountByLabel(String label);
+
+    /**
+     * 根据文章标签和起始位置获得按照修改时间排序后指定个数的文章列表
+     * @param label 文章标签
+     * @param start 起始位置
+     * @param length 文章个数
+     * @return 文章列表
+     * @author 郭欣光
+     */
+    public List<Article> getArticleByLabelAndLLimitOrderByModificationTime(String label, int start, int length);
 }
