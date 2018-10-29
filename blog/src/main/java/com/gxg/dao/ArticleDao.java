@@ -58,4 +58,12 @@ public interface ArticleDao {
      * @author 郭欣光
      */
     public List<Article> getArticleByLabelAndLLimitOrderByModificationTime(String label, int start, int length);
+
+    /**
+     * 根据id获取文章信息
+     * @param id 文章id
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    public Article getArticleById(String id);
 }

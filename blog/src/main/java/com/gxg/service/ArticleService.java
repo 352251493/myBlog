@@ -1,6 +1,7 @@
 package com.gxg.service;
 
 import com.gxg.entities.Article;
+import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,4 +50,12 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public int getArticleAllPageNumberByLabel(String label);
+
+    /**
+     * 获取文章
+     * @param articleId 文章id
+     * @return json{article:(文章信息), conetnt：(文章内容)}
+     * @author 郭欣光
+     */
+    public JSONObject getArticleDetails(String articleId);
 }

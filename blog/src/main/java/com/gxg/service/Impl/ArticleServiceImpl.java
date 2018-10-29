@@ -253,4 +253,45 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return articleList;
     }
+
+    /**
+     * 获取文章
+     *
+     * @param articleId 文章id
+     * @return json{article:(文章信息), conetnt：(文章内容)}
+     * @author 郭欣光
+     */
+    @Override
+    public JSONObject getArticleDetails(String articleId) {
+        if (articleDao.getCountById(articleId) == 0) {
+            return null;
+        } else {
+            Article article = articleDao.getArticleById(articleId);
+            if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
+                articleDir += "/";
+            }
+            if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
+                blogBaseDir += "/";
+            }
+            Random random = new Random();
+            if (article.getImgUrl() != null && FileUtil.fileExists(articleDir + article.getImgUrl())) {
+                String imgUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + article.getImgUrl() + "?noCache=" + random.nextDouble();
+                article.setImgUrl(imgUrl);
+            }
+            if (article.getArticleUrl() != null && FileUtil.fileExists(articleDir + article.getArticleUrl())) {
+                JSONObject readFileResult = FileUtil.readFile(articleDir + article.getArticleUrl());
+                if ("true".equals(readFileResult.getString("status"))) {
+                    String content = readFileResult.getString("content");
+                    JSONObject articleDetails = new JSONObject();
+                    articleDetails.accumulate("article", article);
+                    articleDetails.accumulate("content", content);
+                    return articleDetails;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+    }
 }

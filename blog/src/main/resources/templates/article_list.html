@@ -121,7 +121,7 @@
                 <span th:utext="${article.author} + '&nbsp;'" th:if="${article.author} != null"> 随遇而安。 &nbsp;</span>
                 <span th:if="${article.author} == null"> 随遇而安。 &nbsp;</span>
                 <span th:text="${#strings.substringBefore(article.modificationTime, '.')}">----</span>
-                <h1><a th:href="${article.articleUrl}" th:text="${article.title}">------</a></h1>
+                <h1><a th:href="'/article/details/' + ${article.id}" th:text="${article.title}">------</a></h1>
                 <p th:text="${article.articleAbstract}">我们一直在坚持着，不是为了改变这个世界，而是希望不被这个世界所改变。
                 </p>
                 <p><a href="" class="blog-continue">continue reading</a></p>
@@ -137,7 +137,7 @@
                 <span th:utext="${article.author} + '&nbsp;'" th:if="${article.author} != null"> 随遇而安。 &nbsp;</span>
                 <span th:if="${article.author} == null"> 随遇而安。 &nbsp;</span>
                 <span th:text="${#strings.substringBefore(article.modificationTime, '.')}">----</span>
-                <h1><a th:href="${article.articleUrl}" th:text="${article.title}">------</a></h1>
+                <h1><a th:href="'/article/details/' + ${article.id}" th:text="${article.title}">------</a></h1>
                 <p th:text="${article.articleAbstract}">我们一直在坚持着，不是为了改变这个世界，而是希望不被这个世界所改变。
                 </p>
                 <p><a href="" class="blog-continue">continue</a></p>

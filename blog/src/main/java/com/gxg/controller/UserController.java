@@ -1,5 +1,6 @@
 package com.gxg.controller;
 
+import com.gxg.entities.User;
 import com.gxg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,5 +42,16 @@ public class UserController {
     @ResponseBody
     public String signOut(HttpServletRequest request) {
         return userService.signOut(request);
+    }
+
+    @PostMapping(value = "/get_user")
+    @ResponseBody
+    public String getUser(HttpServletRequest request) {
+        User user = userService.getLoginUser(request);
+        if (user == null) {
+            return "Get user failure!";
+        } else {
+            return "Get user success!";
+        }
     }
 }

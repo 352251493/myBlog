@@ -108,4 +108,18 @@ public class ArticleDaoImpl implements ArticleDao {
         List<Article> articleList = jdbcTemplate.query(sql, new ArticleRowMapper(), label, start, length);
         return articleList;
     }
+
+    /**
+     * 根据id获取文章信息
+     *
+     * @param id 文章id
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    @Override
+    public Article getArticleById(String id) {
+        String sql = "select * from article where id=?";
+        Article article = jdbcTemplate.queryForObject(sql, new ArticleRowMapper(), id);
+        return article;
+    }
 }

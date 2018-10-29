@@ -68,6 +68,21 @@ function publishArticleSuccess(data) {
     }
 }
 
+function getUser() {
+    $.ajax({
+        type: "POST",
+        url: "/user/get_user",
+        // async: false,//true表示同步，false表示异步
+        cache: false,//设置不缓存
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest + textStatus + errorThrown);
+        }
+    });
+}
+
 $(document).ready(function () {
     var E = window.wangEditor;
     editor = new E('#article-content');
@@ -110,4 +125,5 @@ $(document).ready(function () {
         'redo'  // 重复
     ];
     editor.create();
+    setInterval(getUser, 3 * 60 * 1000);
 });
