@@ -1,12 +1,12 @@
 package com.gxg.service.Impl;
 
-import com.gxg.controller.ArticleController;
 import com.gxg.dao.ArticleDao;
 import com.gxg.dao.UserDao;
 import com.gxg.entities.Article;
 import com.gxg.entities.User;
 import com.gxg.service.ArticleService;
 import com.gxg.utils.FileUtil;
+import com.zaxxer.hikari.util.SuspendResumeLock;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +48,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Value("${article.list.number}")
     private int articleListNumber;
+
+    @Value("${article.same.label.lately.number}")
+    private int articleSameLabelLatelyNumber;
+
+    @Value("${article.same.label.hottest.number}")
+    private int articleSameLabelHottestNumber;
 
     /**
      * 获得最近几次的文章列表
@@ -230,12 +236,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     private List<Article> articleUrlProcess(List<Article> articleList) {
-        if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
-            articleDir += "/";
-        }
-        if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
-            blogBaseDir += "/";
-        }
+        this.baseDirProcess();
         if (articleDir.length() >= blogBaseDir.length()) {
             Random random = new Random();
             for (int i = 0; i < articleList.size(); i++) {
@@ -267,12 +268,7 @@ public class ArticleServiceImpl implements ArticleService {
             return null;
         } else {
             Article article = articleDao.getArticleById(articleId);
-            if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
-                articleDir += "/";
-            }
-            if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
-                blogBaseDir += "/";
-            }
+            this.baseDirProcess();
             Random random = new Random();
             if (article.getImgUrl() != null && FileUtil.fileExists(articleDir + article.getImgUrl())) {
                 String imgUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + article.getImgUrl() + "?noCache=" + random.nextDouble();
@@ -293,5 +289,273 @@ public class ArticleServiceImpl implements ArticleService {
                 return null;
             }
         }
+    }
+
+    /**
+     * 获得指定文章前一篇文章
+     *
+     * @param article 指定文章
+     * @return 前一篇文章
+     * @author 郭欣光
+     */
+    @Override
+    public Article getPreviousArticle(Article article) {
+        Article preArticle = null;
+        if (article != null && article.getModificationTime() != null && articleDao.getCountByLabelAndMoreThanTheModificationTime(article.getModificationTime(), article.getLabel()) != 0) {
+            preArticle = articleDao.getArticleByLabelAndJustMoreThanTheModificationTime(article.getModificationTime(), article.getLabel());
+            this.baseDirProcess();
+            Random random = new Random();
+            if (preArticle.getImgUrl() != null && FileUtil.fileExists(articleDir + preArticle.getImgUrl())) {
+                String imgUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + preArticle.getImgUrl() + "?noCache=" + random.nextDouble();
+                preArticle.setImgUrl(imgUrl);
+            }
+            if (preArticle.getArticleUrl() != null && FileUtil.fileExists(articleDir + preArticle.getArticleUrl())) {
+                String articleUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + preArticle.getArticleUrl() + "?noCache=" + random.nextDouble();
+                preArticle.setArticleUrl(articleUrl);
+            }
+        }
+        return preArticle;
+    }
+
+    /**
+     * 获得指定文章的后一篇文章
+     *
+     * @param article 指定文章
+     * @return 后一篇文章
+     * @author 郭欣光
+     */
+    @Override
+    public Article getNextArticle(Article article) {
+        Article nextArticle = null;
+        if (article != null && article.getModificationTime() != null && articleDao.getCountByLabelAndLessThanTheModificationTime(article.getModificationTime(), article.getLabel()) != 0) {
+            nextArticle = articleDao.getArticleByLabelAndJustLessThanTheModificationTime(article.getModificationTime(), article.getLabel());
+            this.baseDirProcess();
+            Random random = new Random();
+            if (nextArticle.getImgUrl() != null && FileUtil.fileExists(articleDir + nextArticle.getImgUrl())) {
+                String imgUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + nextArticle.getImgUrl() + "?noCache=" + random.nextDouble();
+                nextArticle.setImgUrl(imgUrl);
+            }
+            if (nextArticle.getArticleUrl() != null && FileUtil.fileExists(articleDir + nextArticle.getArticleUrl())) {
+                String articleUrl = blogInformationBaseUrl + articleDir.substring(blogBaseDir.length() - 1) + nextArticle.getArticleUrl() + "?noCache=" + random.nextDouble();
+                nextArticle.setArticleUrl(articleUrl);
+            }
+        }
+        return nextArticle;
+    }
+
+    /**
+     * 将文章的阅读数量加一
+     *
+     * @param article 文章信息
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized void addArticleReadCount(Article article) {
+        if (article != null && articleDao.getCountById(article.getId()) != 0) {
+            article = articleDao.getArticleById(article.getId());
+            article.setReadNumber(article.getReadNumber() + 1);
+            try {
+                if (articleDao.updateArticle(article) == 0) {
+                    System.out.println("文章：" + article.getId() + "增加阅读量时数据库出错！");
+                }
+            } catch (Exception e) {
+                System.out.println("文章：" + article.getId() + "增加阅读量时数据库出错！错误信息：" + e);
+            }
+        }
+    }
+
+    /**
+     * 根据标签获取最近的文章信息
+     *
+     * @param label 标签
+     * @return 最近文章信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<Article> getLastlyArticleByLabel(String label) {
+        List<Article> latelyArticleList = null;
+        if (articleDao.getCountByLabel(label) != 0) {
+            latelyArticleList = articleDao.getArticleByLabelAndLLimitOrderByModificationTime(label, 0, articleSameLabelLatelyNumber);
+            latelyArticleList = this.articleUrlProcess(latelyArticleList);
+        }
+        return latelyArticleList;
+    }
+
+    /**
+     * 根据标签获取最热文章信息
+     *
+     * @param label 标签
+     * @return 最热文章信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<Article> getHottestArticleByLabel(String label) {
+        List<Article> hottestArticleList = null;
+        if (articleDao.getCountByLabel(label) != 0) {
+            hottestArticleList = articleDao.getArticleByLabelAndLimitOrderByReadNumber(label, 0, articleSameLabelHottestNumber);
+            hottestArticleList = this.articleUrlProcess(hottestArticleList);
+        }
+        return hottestArticleList;
+    }
+
+    /**
+     * 删除文章
+     *
+     * @param articleId 文章id
+     * @param request   用户请求信息
+     * @return 删除结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String deleteArticle(String articleId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (articleDao.getCountById(articleId) == 0) {
+            content = "该文章不存在！";
+        } else {
+            Article article = articleDao.getArticleById(articleId);
+            boolean isDelete = true;
+            try {
+                if (articleDao.deleteArticle(article) == 0) {
+                    isDelete= false;
+                    System.out.println("从删除文章：" + articleId + "出错！");
+                    content = "从数据库删除文章出错！";
+                }
+            } catch (Exception e) {
+                isDelete = false;
+                System.out.println("从删除文章：" + articleId + "出错！错误原因：" + e);
+                content = "从数据库删除文章出错！";
+            }
+            if (isDelete) {
+                status = "true";
+                if ("生活情感".equals(article.getLabel())) {
+                    content = "/life/";
+                } else if ("学习感悟".equals(article.getLabel())) {
+                    content = "/study/";
+                } else {
+                    content = "/";
+                }
+                this.baseDirProcess();
+                if (FileUtil.fileExists(articleDir + article.getImgUrl())) {
+                    JSONObject deleteImgResult = FileUtil.deleteFile(articleDir + article.getImgUrl());
+                    System.out.println("删除文章" + articleId + "的封面图片结果：" + deleteImgResult.toString());
+                } else {
+                    System.out.println("文章" + articleId + "封面图片不存在！");
+                }
+                if (FileUtil.fileExists(articleDir + article.getArticleUrl())) {
+                    JSONObject deleteArticleResult = FileUtil.deleteFile(articleDir + article.getArticleUrl());
+                    System.out.println("删除文章" + articleId + "内容文件结果：" + deleteArticleResult);
+                } else {
+                    System.out.println("文章" + articleId + "内容文件不存在！");
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    private void baseDirProcess() {
+        if (articleDir.lastIndexOf("/") != articleDir.length() - 1) {
+            articleDir += "/";
+        }
+        if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
+            blogBaseDir += "/";
+        }
+    }
+
+    /**
+     * 更改文章封面图片
+     *
+     * @param articleId  文章id
+     * @param articleImg 文章封面图片
+     * @param request    用户请求
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String editImg(String articleId, MultipartFile articleImg, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "更改失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (articleId == null || articleId.length() == 0  || "".equals(articleId)) {
+            content = "系统获取文章ID失败！";
+        } else if (articleDao.getCountById(articleId) == 0) {
+            content = "该文章不存在！";
+        } else {
+            boolean isImg = true;
+            try {
+                if (!FileUtil.isImage(articleImg)) {
+                    isImg = false;
+                    content = "请上传图片类型文件！";
+                }
+            } catch (Exception e) {
+                System.out.println("系统在判断文件是否是图片时出错：" + e);
+                content = "系统在判断文件是否是图片时出错！";
+                isImg = false;
+            }
+            if (isImg) {
+                String articleImgName = articleImg.getOriginalFilename();//上传图片的名称
+                String articleImgType = articleImgName.substring(articleImgName.lastIndexOf(".") + 1);//上传图片的后缀类型
+                if (!FileUtil.isImageByType(articleImgType)) {
+                    content = "请上传图片类型文件！";
+                } else if (FileUtil.getFileSize(articleImg) > 50 * 1024 * 1024) {
+                    content = "图片大小不能超过50MB！";
+                } else {
+                    Article article = articleDao.getArticleById(articleId);
+                    this.baseDirProcess();
+                    JSONObject uploadImgResult = FileUtil.uploadFile(articleImg, article.getId() + "." + articleImgType, articleDir);
+                    if ("true".equals(uploadImgResult.getString("status"))) {
+                        String oldArticleImgType = article.getImgUrl().substring(article.getImgUrl().lastIndexOf(".") + 1);
+                        Timestamp time = new Timestamp(System.currentTimeMillis());
+                        article.setModificationTime(time);
+                        if (articleImgType.equals(oldArticleImgType)) {
+                            try {
+                                if (articleDao.updateArticle(article) == 0) {
+                                    System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败");
+                                    content = "更新数据库失败！";
+                                } else {
+                                    status = "true";
+                                    content = "更改成功！";
+                                }
+                            } catch (Exception e) {
+                                System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败，失败原因：" + e);
+                                content = "更新数据库失败！";
+                            }
+                        } else {
+                            article.setImgUrl(article.getId() + "." + articleImgType);
+                            try {
+                                articleDao.updateArticle(article);
+                                status = "true";
+                                content = "更改成功！";
+                            } catch (Exception e) {
+                                System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败，失败原因：" + e);
+                                content = "更新数据库失败！";
+                            }
+                            if ("true".equals(status)) {
+                                JSONObject deleteOldImgResult = FileUtil.deleteFile(articleDir + article.getId() + "." + oldArticleImgType);
+                                System.out.println("更改文章" + article.getId() + "封面图片时删除原图片" + articleDir + article.getId() + "." + oldArticleImgType + "处理结果：" + deleteOldImgResult.toString());
+                            } else {
+                                JSONObject deleteUploadImgResult = FileUtil.deleteFile(articleDir + article.getId() + "." + articleImgType);
+                                System.out.println("更改文章" + article.getId() + "数据库操作失败后删除上传的图片" + articleDir + article.getId() + "." + articleImgType + "处理结果：" + deleteUploadImgResult.toString());
+                            }
+                        }
+                    } else {
+                        status = "false";
+                        content = uploadImgResult.getString("content");
+                    }
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
     }
 }

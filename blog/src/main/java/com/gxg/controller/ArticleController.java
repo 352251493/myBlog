@@ -88,7 +88,28 @@ public class ArticleController {
             if (user != null) {
                 model.addAttribute("user", user);
             }
+            Article preArticle = articleService.getPreviousArticle(article);
+            model.addAttribute("preArticle", preArticle);
+            Article nextArticle = articleService.getNextArticle(article);
+            model.addAttribute("nextArticle", nextArticle);
+            articleService.addArticleReadCount(article);
+            List<Article> latelyArticleList = articleService.getLastlyArticleByLabel(article.getLabel());
+            model.addAttribute("latelyArticleList", latelyArticleList);
+            List<Article> hottestArticleList = articleService.getHottestArticleByLabel(article.getLabel());
+            model.addAttribute("hottestArticleList", hottestArticleList);
             return "/article.html";
         }
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestParam String articleId, HttpServletRequest request) {
+        return articleService.deleteArticle(articleId, request);
+    }
+
+    @PostMapping(value = "/edit/img")
+    @ResponseBody
+    public String editImg(@RequestParam String articleId, @RequestParam MultipartFile articleImg, HttpServletRequest request) {
+        return articleService.editImg(articleId, articleImg, request);
     }
 }

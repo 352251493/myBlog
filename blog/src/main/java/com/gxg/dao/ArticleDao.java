@@ -2,6 +2,7 @@ package com.gxg.dao;
 
 import com.gxg.entities.Article;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -66,4 +67,66 @@ public interface ArticleDao {
      * @author 郭欣光
      */
     public Article getArticleById(String id);
+
+    /**
+     * 获取指定文章标签大于某一修改时间的文章数量
+     * @param modificationTime 修改时间
+     * @param label 文章标签
+     * @return 文章数量
+     * @author 郭欣光
+     */
+    public int getCountByLabelAndMoreThanTheModificationTime(Timestamp modificationTime, String label);
+
+    /**
+     * 获得指定标签刚刚大于指定修改时间的文章
+     * @param modificationTime 修改时间
+     * @param label 文章标签
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    public Article getArticleByLabelAndJustMoreThanTheModificationTime(Timestamp modificationTime, String label);
+
+    /**
+     * 获取指定标签小于某一修改时间的文章数量
+     * @param modificationTime 修改时间
+     * @param label 指定标签
+     * @return 文章数量
+     * @author 郭欣光
+     */
+    public int getCountByLabelAndLessThanTheModificationTime(Timestamp modificationTime, String label);
+
+    /**
+     * 获得指定标签刚刚小于指定修改时间的文章
+     * @param modificationTime 修改时间
+     * @param label 指定标签
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    public Article getArticleByLabelAndJustLessThanTheModificationTime(Timestamp modificationTime, String label);
+
+    /**
+     * 更新文章数据库信息
+     * @param article 文章信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int updateArticle(Article article);
+
+    /**
+     * 获取指定标签按阅读数量排序的指定区间的文章信息
+     * @param label 标签
+     * @param start 区间开始
+     * @param length 获取个数
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    public List<Article> getArticleByLabelAndLimitOrderByReadNumber(String label, int start, int length);
+
+    /**
+     * 删除文章
+     * @param article 文章信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int deleteArticle(Article article);
 }

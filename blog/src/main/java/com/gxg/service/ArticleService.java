@@ -58,4 +58,62 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public JSONObject getArticleDetails(String articleId);
+
+    /**
+     * 获得指定文章前一篇文章
+     * @param article 指定文章
+     * @return 前一篇文章
+     * @author 郭欣光
+     */
+    public  Article getPreviousArticle(Article article);
+
+    /**
+     * 获得指定文章的后一篇文章
+     * @param article 指定文章
+     * @return 后一篇文章
+     * @author 郭欣光
+     */
+    public Article getNextArticle(Article article);
+
+    /**
+     * 将文章的阅读数量加一
+     * @param article 文章信息
+     * @author 郭欣光
+     */
+    public void addArticleReadCount(Article article);
+
+    /**
+     * 根据标签获取最近的文章信息
+     * @param label 标签
+     * @return 最近文章信息
+     * @author 郭欣光
+     */
+    public List<Article> getLastlyArticleByLabel(String label);
+
+    /**
+     * 根据标签获取最热文章信息
+     * @param label 标签
+     * @return 最热文章信息
+     * @author 郭欣光
+     */
+    public List<Article> getHottestArticleByLabel(String label);
+
+    /**
+     * 删除文章
+     * @param articleId 文章id
+     * @param request 用户请求信息
+     * @return 删除结果
+     * @author 郭欣光
+     */
+    public String deleteArticle(String articleId, HttpServletRequest request);
+
+    /**
+     * 更改文章封面图片
+     * @param articleId 文章id
+     * @param articleImg 文章封面图片
+     * @param request 用户请求
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String editImg(String articleId, MultipartFile articleImg, HttpServletRequest request);
 }
