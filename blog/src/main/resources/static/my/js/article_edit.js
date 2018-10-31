@@ -1,72 +1,6 @@
 /**
- * Created by 郭欣光 on 2018/10/25.
+ * Created by 郭欣光 on 2018/10/31.
  */
-function publishArticle() {
-    var articleTitle = $("#articleTitle").val();
-    var articleAbstract = $("#articleAbstract").val();
-    var file =  document.getElementById('articleImg').files[0];
-    var filePath = $('#articleImg').val().toLowerCase().split(".");
-    var fileType =  filePath[filePath.length - 1];
-    var articleContent = editor.txt.html();
-    if (articleTitle == null || articleTitle == "" || articleTitle.length == 0) {
-        openAlert("标题不能为空！");
-    } else if (articleAbstract == null || articleAbstract == "" || articleAbstract.length == 0) {
-        openAlert("摘要不能为空！");
-    } else if (file == null) {
-        openAlert("请上传封面图片！");
-    } else if (fileType != "bmf" && fileType != "png" && fileType != "gif" && fileType != "jpg" && fileType != "jpeg") {
-        openAlert("封面图片必须是图片类型！");
-    } else if (file.size > 50 * 1024 * 1024) {
-        openAlert("图片大小不能超过50MB！");
-    } else if (articleContent == null || articleContent == "" || articleContent.length == 0) {
-        openAlert("请输入正文！");
-    } else if (articleTitle.length > 100) {
-        openAlert("标题不能超过100字符！");
-    } else if (articleAbstract.length > 200) {
-        openAlert("摘要不能超过200字符！");
-    } else {
-        var articleLabelDom = document.getElementsByName("articleLabel");
-        var isSelect = false;
-        for (var i = 0; i < articleLabelDom.length; i++) {
-            if (articleLabelDom[i].checked) {
-                isSelect = true;
-                break;
-            }
-        }
-        if (isSelect) {
-            var formData = new FormData($('#article-form')[0]);
-            formData.append("articleContent", articleContent);
-            openLoadingModel("正在发表，请稍后...");
-            $.ajax({
-                type: "POST",
-                url: "/article/publish",
-                // async: false,//true表示同步，false表示异步
-                cache: false,//设置不缓存
-                data: formData,
-                contentType: false,//必须设置false才会自动加上正确的Content-Tyoe
-                processData: false,//必须设置false才避开jquery对formdata的默认处理，XMLHttpRequest会对formdata进行正确的处理
-                success: publishArticleSuccess,
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    closeLoadingModel();
-                    openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
-                }
-            });
-        } else {
-            openAlert("请选择类别！");
-        }
-    }
-}
-
-function publishArticleSuccess(data) {
-    var result = JSON.parse(data);
-    if (result.status == "true") {
-        window.location.href = result.content;
-    } else {
-        closeLoadingModel();
-        openAlert(result.content);
-    }
-}
-
 function getUser() {
     $.ajax({
         type: "POST",
@@ -80,6 +14,69 @@ function getUser() {
             console.log(XMLHttpRequest + textStatus + errorThrown);
         }
     });
+}
+
+function editArticle() {
+    var articleTitle = $("#articleTitle").val();
+    var articleAbstract = $("#articleAbstract").val();
+    var articleContent = editor.txt.html();
+    var articleId = $("#articleId").val();
+    if (articleId == null || articleId == "" || articleId.length == 0) {
+        openAlert("系统获取文章ID出错！");
+    } else if (articleTitle == null || articleTitle == "" || articleTitle.length == 0) {
+        openAlert("标题不能为空！");
+    } else if (articleAbstract == null || articleAbstract == "" || articleAbstract.length == 0) {
+        openAlert("摘要不能为空！");
+    } else if (articleContent == null || articleContent == "" || articleContent.length == 0) {
+        openAlert("请输入正文！");
+    } else if (articleTitle.length > 100) {
+        openAlert("标题不能超过100字符！");
+    } else if (articleAbstract.length > 200) {
+        openAlert("摘要不能超过200字符！");
+    } else {
+        var articleLabelDom = document.getElementsByName("articleLabel");
+        var isSelect = false;
+        var articleLabel;
+        for (var i = 0; i < articleLabelDom.length; i++) {
+            if (articleLabelDom[i].checked) {
+                isSelect = true;
+                articleLabel = articleLabelDom[i].value;
+                break;
+            }
+        }
+        if (isSelect) {
+            openLoadingModel("正在处理，请稍后...");
+            var obj = new Object();
+            obj.articleId = articleId;
+            obj.articleTitle = articleTitle;
+            obj.articleAbstract = articleAbstract;
+            obj.articleLabel = articleLabel;
+            obj.articleContent = articleContent;
+            $.ajax({
+                url: "/article/edit",
+                type: "POST",
+                cache: false,//设置不缓存
+                data: obj,
+                success: editArticleSuccess,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    closeLoadingModel();
+                    openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        } else {
+            openAlert("请选择类别！");
+        }
+    }
+}
+
+function editArticleSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
+        window.location.href = result.content;
+    } else {
+        closeLoadingModel();
+        openAlert(result.content);
+    }
 }
 
 $(document).ready(function () {

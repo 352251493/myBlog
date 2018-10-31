@@ -169,7 +169,7 @@ public class ArticleServiceImpl implements ArticleService {
                                     }
                                 } else {
                                     status = "true";
-                                    content = "发表成功！";
+                                    content = "/article/details/" + id;
                                 }
                             } catch (Exception e) {
                                 content = "添加数据库失败！";
@@ -517,17 +517,14 @@ public class ArticleServiceImpl implements ArticleService {
                         Timestamp time = new Timestamp(System.currentTimeMillis());
                         article.setModificationTime(time);
                         if (articleImgType.equals(oldArticleImgType)) {
+                            status = "true";
+                            content = "更改成功！";
                             try {
                                 if (articleDao.updateArticle(article) == 0) {
-                                    System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败");
-                                    content = "更新数据库失败！";
-                                } else {
-                                    status = "true";
-                                    content = "更改成功！";
+                                    System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败，导致更新修改时间未成功");
                                 }
                             } catch (Exception e) {
-                                System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败，失败原因：" + e);
-                                content = "更新数据库失败！";
+                                System.out.println("更改文章" + article.getId() + "封面图片时更新数据库失败，导致更新修改时间未成功，失败原因：" + e);
                             }
                         } else {
                             article.setImgUrl(article.getId() + "." + articleImgType);
@@ -553,6 +550,73 @@ public class ArticleServiceImpl implements ArticleService {
                     }
                 }
             }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 更改文章内容
+     * @param articleId 文章ID
+     * @param articleTitle 文章标题
+     * @param articleAbstract 文章摘要
+     * @param articleLabel 文章标签
+     * @param articleContent 文章内容
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String edit(String articleId, String articleTitle, String articleAbstract, String articleLabel, String articleContent, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "修改失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (articleId == null || articleId.length() == 0 || "".equals(articleId)) {
+            content = "系统获取文章ID失败！";
+        } else if (articleDao.getCountById(articleId) == 0) {
+            content = "该文章不存在！";
+        } else if (articleTitle == null || articleTitle.length() == 0 || "".equals(articleTitle)) {
+            content = "标题不能为空！";
+        } else if (articleAbstract == null || articleAbstract.length() == 0 || "".equals(articleAbstract)) {
+            content = "摘要不能为空！";
+        } else if (articleLabel == null || articleLabel.length() == 0 || "".equals(articleLabel)) {
+            content = "请选择类别！";
+        } else if (articleContent == null || articleContent.length() == 0 || "".equals(articleContent)) {
+            content = "请输入正文！";
+        } else if (articleTitle.length() > 100) {
+            content = "标题不能超过100字符！";
+        } else if (articleAbstract.length() > 200) {
+            content = "摘要不能超过200字符！";
+        } else {
+            this.baseDirProcess();
+            JSONObject writeArticleResult = FileUtil.writeFile(articleDir, articleId + ".html", articleContent);
+            if ("true".equals(writeArticleResult.getString("status"))) {
+                Article article = articleDao.getArticleById(articleId);
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                article.setTitle(articleTitle);
+                article.setArticleAbstract(articleAbstract);
+                article.setLabel(articleLabel);
+                article.setModificationTime(time);
+                try {
+                    if (articleDao.updateArticle(article) == 0) {
+                        System.out.println("修改文章" + articleId + "时操作数据库失败，但文章正文已经保存！");
+                        content = "修改文章时操作数据库失败，但文章正文已经保存！";
+                    } else {
+                        status = "true";
+                        content = "/article/details/" + articleId;
+                    }
+                } catch (Exception e) {
+                    System.out.println("修改文章" + articleId + "时操作数据库失败，但文章正文已经保存！失败原因：" + e);
+                    content = "修改文章时操作数据库失败，但文章正文已经保存！";
+                }
+            } else {
+                content = "修改失败，原因：" + writeArticleResult.getString("content");
+            }
+
         }
         result.accumulate("status", status);
         result.accumulate("content", content);

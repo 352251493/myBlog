@@ -208,7 +208,7 @@
         </div>
         <div class="am-modal-bd">
             <button type="button" class="am-btn am-btn-default am-round" onclick="openChangeArticleImgModel();">更换封面图片</button>
-            <button type="button" class="am-btn am-btn-default am-round" onclick="openOtherInformationModel();">编辑文章内容</button>
+            <button type="button" class="am-btn am-btn-default am-round" th:onclick="'window.location.href=\'/article/edit/' + ${article.id} + '\''">编辑文章内容</button>
         </div>
     </div>
 </div>

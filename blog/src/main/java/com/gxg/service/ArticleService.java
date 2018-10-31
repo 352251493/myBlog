@@ -116,4 +116,17 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public String editImg(String articleId, MultipartFile articleImg, HttpServletRequest request);
+
+    /**
+     * 更改文章内容
+     * @param articleId 文章ID
+     * @param articleTitle 文章标题
+     * @param articleAbstract 文章摘要
+     * @param articleLabel 文章标签
+     * @param articleContent 文章内容
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String edit(String articleId, String articleTitle, String articleAbstract, String articleLabel, String articleContent, HttpServletRequest request);
 }
