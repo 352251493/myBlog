@@ -129,6 +129,12 @@ public class ArticleController {
         return articleService.edit(articleId, articleTitle, articleAbstract, articleLabel, articleContent, request);
     }
 
+    @GetMapping(value = "/comment/article_id/{articleId}")
+    @ResponseBody
+    public String getArticleComment(@PathVariable String articleId, @RequestParam String articleCommentPage, HttpServletRequest request) {
+        return articleService.getArticleComment(articleId, articleCommentPage, request);
+    }
+
     private Model setBaseModel(Model model, HttpServletRequest request) {
         Blog blog = blogService.getBlog(request);
         if (blog != null) {

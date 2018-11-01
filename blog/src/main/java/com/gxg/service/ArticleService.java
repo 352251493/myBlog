@@ -129,4 +129,14 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public String edit(String articleId, String articleTitle, String articleAbstract, String articleLabel, String articleContent, HttpServletRequest request);
+
+    /**
+     * 获取文章评论列表
+     * @param articleId 文章ID
+     * @param articleCommentPage 获取第几页评论
+     * @param request 用户请求信息
+     * @return 请求结果
+     * @author 郭欣光
+     */
+    public String getArticleComment(String articleId, String articleCommentPage, HttpServletRequest request);
 }

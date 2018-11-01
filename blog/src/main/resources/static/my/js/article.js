@@ -2,6 +2,8 @@
  * Created by 郭欣光 on 2018/10/30.
  */
 
+var articleCommentPage = 0;
+
 function deleteArticle(articleId) {
     $('#delete-article-confirm').modal({
         relatedTarget: this,
@@ -120,3 +122,117 @@ function changeArticleImgFailed(evt) {
     console.log(evt.target.responseText);
     openAlert("上传失败！原因：" + evt.target.responseText);
 }
+
+function getArticleComment() {
+    if (articleCommentPage > 0) {
+        $("#load-more-article-comment-button").attr("disabled","disabled");
+        var str = '<i class="am-icon-spinner am-icon-spin"></i>正在加载...';
+        $("#load-more-article-comment-button").html(str);
+    }
+    var articleId = $("#articleId").val();
+    if (articleId == null || articleId == "" || articleId.length == 0) {
+        console.log("获取文章ID出错！");
+        if (articleCommentPage > 0) {
+            $("#article-comment-list").append(str);
+            $("#load-more-article-comment-button").html("点击加载更多");
+            $("#load-more-article-comment-button").removeAttr("disabled");
+        }
+    } else {
+        articleCommentPage = articleCommentPage + 1;
+        var obj = new Object();
+        obj.articleCommentPage = articleCommentPage;
+        $.ajax({
+            url: "/article/comment/article_id/" + articleId,
+            type: "GET",
+            cache: false,//设置不缓存
+            data: obj,
+            success: getArticleCommentSuccess,
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("请求出错：" + XMLHttpRequest + textStatus + errorThrown);
+                articleCommentPage = articleCommentPage -1;
+                if (articleCommentPage > 0) {
+                    $("#article-comment-list").append(str);
+                    $("#load-more-article-comment-button").html("点击加载更多");
+                    $("#load-more-article-comment-button").removeAttr("disabled");
+                }
+            }
+        });
+    }
+}
+
+function getArticleCommentSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
+        if (articleCommentPage == 1) {
+            if (result.isHasComment == "true") {
+                var str = "";
+                for (var i = 0; i < result.content.length; i++) {
+                    var articleComment = result.content[i];
+                    str += '<hr/>';
+                    str += '<div class="am-u-sm-3 am-u-md-3 am-u-lg-2">';
+                    str += '<img src="' + articleComment.headImg + '" alt="" class="blog-author-img am-circle">';
+                    str += '</div>';
+                    str += '<div class="am-u-sm-9 am-u-md-9 am-u-lg-10">';
+                    str += '<h3 class="am-cf">';
+                    str += '<span>' + articleComment.name + ' &nbsp;: &nbsp;</span>';
+                    if (result.isUser == "true") {
+                        str += '<span class="blog-color">' + articleComment.email + ' &nbsp;: &nbsp;</span>';
+                    }
+                    str += '<span class="blog-color">' + articleComment.createTime.split(".")[0] + '</span>';
+                    if (result.isUser == "true") {
+                        str += '<a class="am-btn am-btn-link am-fr" style="color: red" href="javascript:deleteArticleComment("' + articleComment.id + '");"><i class="am-icon-trash am-icon-fw"></i></a>';
+                    }
+                    str += '</h3>';
+                    str += '<p>' + articleComment.comment + '</p>';
+                    str += '</div>';
+                }
+                $("#article-comment-list").html(str);
+                str = '<button type="button" id="load-more-article-comment-button" class="am-btn am-btn-default am-btn-block" onclick="getArticleComment();">点击加载更多</button>';
+                $("#show-load-more-article-comment").html(str);
+            } else {
+                console.log(result.content);
+            }
+        } else {
+            if (result.isHasComment == "true") {
+                var str = "";
+                for (var i = 0; i < result.content.length; i++) {
+                    var articleComment = result.content[i];
+                    str += '<hr/>';
+                    str += '<div class="am-u-sm-3 am-u-md-3 am-u-lg-2">';
+                    str += '<img src="' + articleComment.headImg + '" alt="" class="blog-author-img am-circle">';
+                    str += '</div>';
+                    str += '<div class="am-u-sm-9 am-u-md-9 am-u-lg-10">';
+                    str += '<h3 class="am-cf">';
+                    str += '<span>' + articleComment.name + ' &nbsp;: &nbsp;</span>';
+                    if (result.isUser == "true") {
+                        str += '<span class="blog-color">' + articleComment.email + ' &nbsp;: &nbsp;</span>';
+                    }
+                    str += '<span class="blog-color">' + articleComment.createTime.split(".")[0] + '</span>';
+                    if (result.isUser == "true") {
+                        str += '<a class="am-btn am-btn-link am-fr" style="color: red" href="javascript:deleteArticleComment("' + articleComment.id + '");"><i class="am-icon-trash am-icon-fw"></i></a>';
+                    }
+                    str += '</h3>';
+                    str += '<p>' + articleComment.comment + '</p>';
+                    str += '</div>';
+                }
+                $("#article-comment-list").append(str);
+                $("#load-more-article-comment-button").html("点击加载更多");
+                $("#load-more-article-comment-button").removeAttr("disabled");
+            } else {
+                $("#load-more-article-comment-button").html("没有更多啦~");
+            }
+        }
+    } else {
+        console.log(result.content);
+        articleCommentPage = articleCommentPage - 1;
+        if (articleCommentPage > 0) {
+            $("#article-comment-list").append(str);
+            $("#load-more-article-comment-button").html("点击加载更多");
+            $("#load-more-article-comment-button").removeAttr("disabled");
+        }
+    }
+}
+
+$(document).ready(function () {
+    getArticleComment();
+});

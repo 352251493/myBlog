@@ -1,8 +1,10 @@
 package com.gxg.service.Impl;
 
+import com.gxg.dao.ArticleCommentDao;
 import com.gxg.dao.ArticleDao;
 import com.gxg.dao.UserDao;
 import com.gxg.entities.Article;
+import com.gxg.entities.ArticleComment;
 import com.gxg.entities.User;
 import com.gxg.service.ArticleService;
 import com.gxg.utils.FileUtil;
@@ -54,6 +56,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Value("${article.same.label.hottest.number}")
     private int articleSameLabelHottestNumber;
+
+    @Autowired
+    private ArticleCommentDao articleCommentDao;
+
+    @Value("${article.comment.each.page.number}")
+    private int articleCommentEachPageNumber;
 
     /**
      * 获得最近几次的文章列表
@@ -620,6 +628,58 @@ public class ArticleServiceImpl implements ArticleService {
         }
         result.accumulate("status", status);
         result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 获取文章评论列表
+     *
+     * @param articleId          文章ID
+     * @param articleCommentPage 获取第几页评论
+     * @param request            用户请求信息
+     * @return 请求结果
+     * @author 郭欣光
+     */
+    @Override
+    public String getArticleComment(String articleId, String articleCommentPage, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "获取失败！";
+        String isUser = "false";
+        String isHasComment = "false";
+        int articleCommentPageInt = 0;
+        List<ArticleComment> articleCommentList = null;
+        try {
+            articleCommentPageInt = Integer.parseInt(articleCommentPage);
+        } catch (Exception e) {
+            content = "传入的页数不是整型数字！";
+        }
+        if (articleCommentPageInt <= 0) {
+            if ("获取失败！".equals(content)) {
+                content = "传入的页数小于或等于0！";
+            }
+        } else if (articleCommentDao.getCountByArticleId(articleId) == 0) {
+            content = "没有评论！";
+        } else if (articleCommentDao.getCountByArticleId(articleId) <= articleCommentEachPageNumber * (articleCommentPageInt - 1)) {
+            status = "true";
+            content = "没有更多评论了";
+        } else {
+            articleCommentList = articleCommentDao.getArticleCommentByArticleIdAndLimitOrderByCreateTime(articleId, articleCommentEachPageNumber * (articleCommentPageInt - 1), articleCommentEachPageNumber);
+            status = "true";
+            isHasComment = "true";
+            HttpSession session = request.getSession();
+            if (session.getAttribute("user") != null) {
+                isUser = "true";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("isUser", isUser);
+        result.accumulate("isHasComment", isHasComment);
+        if (articleCommentList != null) {
+            result.accumulate("content", articleCommentList);
+        } else {
+            result.accumulate("content", content);
+        }
         return result.toString();
     }
 }
