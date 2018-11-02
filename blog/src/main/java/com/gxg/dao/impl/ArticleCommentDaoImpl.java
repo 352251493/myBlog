@@ -44,8 +44,36 @@ public class ArticleCommentDaoImpl implements ArticleCommentDao {
      */
     @Override
     public List<ArticleComment> getArticleCommentByArticleIdAndLimitOrderByCreateTime(String articleId, int start, int length) {
-        String sql = "select * from article_comment where article_id=? order by create_time limit ?, ?";
+        String sql = "select * from article_comment where article_id=? order by create_time desc limit ?, ?";
         List<ArticleComment> articleCommentList = jdbcTemplate.query(sql, new ArticleCommentMapper(), articleId, start, length);
         return articleCommentList;
+    }
+
+    /**
+     * 根据id获得文章评论个数
+     *
+     * @param id 文章评论ID
+     * @return 文章评论个数
+     * @author 郭欣光
+     */
+    @Override
+    public int getCountById(String id) {
+        String sql = "select count(1) from article_comment where id=?";
+        int rowCount = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return rowCount;
+    }
+
+    /**
+     * 添加文章评论
+     *
+     * @param articleComment 文章评论信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int createArticleComment(ArticleComment articleComment) {
+        String sql = "insert into article_comment(id, head_img, comment, name, email, article_id, create_time) values(?, ?, ?, ?, ?, ?, ?)";
+        int changeCount = jdbcTemplate.update(sql, articleComment.getId(), articleComment.getHeadImg(), articleComment.getComment(), articleComment.getName(), articleComment.getEmail(), articleComment.getArticleId(), articleComment.getCreateTime());
+        return changeCount;
     }
 }

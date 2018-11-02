@@ -28,4 +28,20 @@ public interface ArticleCommentDao {
      * @author 郭欣光
      */
     public List<ArticleComment> getArticleCommentByArticleIdAndLimitOrderByCreateTime(String articleId, int start, int length);
+
+    /**
+     * 根据id获得文章评论个数
+     * @param id 文章评论ID
+     * @return 文章评论个数
+     * @author 郭欣光
+     */
+    public int getCountById(String id);
+
+    /**
+     * 添加文章评论
+     * @param articleComment 文章评论信息
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int createArticleComment(ArticleComment articleComment);
 }

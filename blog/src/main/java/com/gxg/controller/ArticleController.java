@@ -135,6 +135,18 @@ public class ArticleController {
         return articleService.getArticleComment(articleId, articleCommentPage, request);
     }
 
+    @PostMapping(value = "/comment/email/check_code/send")
+    @ResponseBody
+    public String sendEmailCheckCode(@RequestParam String articleCommentName, @RequestParam String email, HttpServletRequest request) {
+        return articleService.sendEmailCheckCode(articleCommentName, email, request);
+    }
+
+    @PostMapping(value = "/comment/email/check_code/check_and_publish")
+    @ResponseBody
+    public String checkEmailCheckCodeAndPublish(@RequestParam String articleId, @RequestParam String articleCommentName, @RequestParam String articleCommentEmail, @RequestParam String articleCommentComment, @RequestParam String articleCommentEmailCheckCode, HttpServletRequest request) {
+        return articleService.checkEmailCheckCodeAndPublish(articleId, articleCommentName, articleCommentEmail, articleCommentComment, articleCommentEmailCheckCode, request);
+    }
+
     private Model setBaseModel(Model model, HttpServletRequest request) {
         Blog blog = blogService.getBlog(request);
         if (blog != null) {

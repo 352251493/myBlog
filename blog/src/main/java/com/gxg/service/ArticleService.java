@@ -139,4 +139,27 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public String getArticleComment(String articleId, String articleCommentPage, HttpServletRequest request);
+
+    /**
+     * 向邮箱发送验证码
+     * @param articleCommentName 评论人昵称
+     * @param email 邮箱
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String sendEmailCheckCode(String articleCommentName, String email, HttpServletRequest request);
+
+    /**
+     * 检查邮箱验证码并发表评论
+     * @param articleId 文章ID
+     * @param articleCommentName 文章评论昵称
+     * @param articleCommentEmail 文章评论邮箱
+     * @param articleCommentComment 文章评论内容
+     * @param articleCommentEmailCheckCode 用户填写的验证码
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String checkEmailCheckCodeAndPublish(String articleId, String articleCommentName, String articleCommentEmail, String articleCommentComment, String articleCommentEmailCheckCode, HttpServletRequest request);
 }

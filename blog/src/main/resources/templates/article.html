@@ -88,22 +88,22 @@
         
         <hr>
 
-        <form class="am-form am-g">
+        <form class="am-form am-g" onsubmit="getEmailCheckCode(); return false;">
             <h3 class="blog-comment">评论</h3>
           <fieldset>
-            <div class="am-form-group am-u-sm-4 blog-clear-left">
-              <input type="text" class="" placeholder="名字">
+            <div class="am-form-group am-u-sm-6 blog-clear-left">
+              <input type="text" class="" placeholder="昵称" maxlength="20" id="article-comment-name">
             </div>
-            <div class="am-form-group am-u-sm-4">
-              <input type="email" class="" placeholder="邮箱">
+            <div class="am-form-group am-u-sm-6">
+              <input type="email" class="" placeholder="邮箱" maxlength="50" id="article-comment-email">
             </div>
 
-            <div class="am-form-group am-u-sm-4 blog-clear-right">
-              <input type="password" class="" placeholder="网站">
-            </div>
+            <!--<div class="am-form-group am-u-sm-4 blog-clear-right">-->
+              <!--<input type="password" class="" placeholder="网站">-->
+            <!--</div>-->
         
             <div class="am-form-group">
-              <textarea class="" rows="5" placeholder="一字千金"></textarea>
+              <textarea class="" rows="5" placeholder="说点什么吧~" id="article-comment-comment" maxlength="300"></textarea>
             </div>
         
             <p><button type="submit" class="am-btn am-btn-default">发表评论</button></p>
@@ -263,10 +263,23 @@
     </div>
 </div>
 
+<div class="am-modal am-modal-prompt" tabindex="-1" id="article-comment-email-check-code-model">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">验证信息</div>
+        <div class="am-modal-bd">
+            验证码已发送至您的邮箱，请输入您的验证码（您的邮箱信息将不会被其他人看到，该邮箱仅用于对您提出的意见进行探讨）
+            <p style="color: red; font-size: small;">*由于网络原因可能导致验证码接收延迟，如1分钟后仍未收到验证码，请点击取消后重新点击发表评论按钮</p>
+            <input type="text" class="am-modal-prompt-input" id="article-comment-email-check-code">
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+        </div>
+    </div>
+</div>
+
 <div th:include="/html_templates/login.html :: login"></div>
 <div th:include="/html_templates/alert.html :: alert"></div>
-<div th:include="/html_templates/label.html :: label"></div>
-<div th:include="/html_templates/short_words.html :: short-words"></div>
 <div th:include="/html_templates/blog_set.html :: blog-set"></div>
 <div th:include="/html_templates/loading.html :: loading"></div>
 <!--[if (gte IE 9)|!(IE)]><!-->

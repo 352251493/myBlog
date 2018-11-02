@@ -170,9 +170,11 @@ function getArticleCommentSuccess(data) {
                     var articleComment = result.content[i];
                     str += '<hr/>';
                     str += '<div class="am-u-sm-3 am-u-md-3 am-u-lg-2">';
+                    str += '<br/>';
                     str += '<img src="' + articleComment.headImg + '" alt="" class="blog-author-img am-circle">';
                     str += '</div>';
                     str += '<div class="am-u-sm-9 am-u-md-9 am-u-lg-10">';
+                    str += '<br/>';
                     str += '<h3 class="am-cf">';
                     str += '<span>' + articleComment.name + ' &nbsp;: &nbsp;</span>';
                     if (result.isUser == "true") {
@@ -199,9 +201,11 @@ function getArticleCommentSuccess(data) {
                     var articleComment = result.content[i];
                     str += '<hr/>';
                     str += '<div class="am-u-sm-3 am-u-md-3 am-u-lg-2">';
+                    str += '<br/>';
                     str += '<img src="' + articleComment.headImg + '" alt="" class="blog-author-img am-circle">';
                     str += '</div>';
                     str += '<div class="am-u-sm-9 am-u-md-9 am-u-lg-10">';
+                    str += '<br/>';
                     str += '<h3 class="am-cf">';
                     str += '<span>' + articleComment.name + ' &nbsp;: &nbsp;</span>';
                     if (result.isUser == "true") {
@@ -230,6 +234,89 @@ function getArticleCommentSuccess(data) {
             $("#load-more-article-comment-button").html("点击加载更多");
             $("#load-more-article-comment-button").removeAttr("disabled");
         }
+    }
+}
+
+function getEmailCheckCode() {
+    var articleCommentName = $("#article-comment-name").val();
+    var articleCommentEmail = $("#article-comment-email").val();
+    var articleCommentComment = $("#article-comment-comment").val();
+    var articleId = $("#articleId").val();
+    if (articleId == null || articleId == "" || articleId.length == 0) {
+        openAlert("系统获取文章ID出错！");
+    } else if (articleCommentName == null || articleCommentName == "" || articleCommentName.length == 0) {
+        openAlert("请留下您的昵称");
+    } else if (articleCommentEmail == null || articleCommentEmail == "" || articleCommentEmail.length == 0) {
+        openAlert("请留下您的邮箱，您的邮箱信息将不会被其他人看到，该邮箱仅用于对您提出的意见进行探讨");
+    } else if (articleCommentComment == null || articleCommentComment == "" || articleCommentComment.length == 0) {
+        openAlert("说点什么呗~");
+    } else if (articleCommentName.length > 20) {
+        openAlert("昵称长度不能大于20字符");
+    } else if (articleCommentEmail.length > 50) {
+        openAlert("邮箱长度不能大于50字符");
+    } else if (isEmail(articleCommentEmail)) {
+        if (articleCommentComment.length > 300) {
+            openAlert("评论内容不能超过300字符");
+        } else {
+            $('#article-comment-email-check-code-model').modal({
+                relatedTarget: this,
+                onConfirm: function(options) {
+                    var articleCommentEmailCheckCode = $("#article-comment-email-check-code").val();
+                    if (articleCommentEmailCheckCode == null || articleCommentEmailCheckCode == "" || articleCommentEmailCheckCode.length == 0) {
+                        openAlert("请输入验证码！");
+                    } else {
+                        openLoadingModel("正在发表，请稍后...");
+                        var obj = new Object();
+                        obj.articleId = articleId;
+                        obj.articleCommentName = articleCommentName;
+                        obj.articleCommentEmail = articleCommentEmail;
+                        obj.articleCommentComment = articleCommentComment;
+                        obj.articleCommentEmailCheckCode = articleCommentEmailCheckCode;
+                        $.ajax({
+                            url: "/article/comment/email/check_code/check_and_publish",
+                            type: "POST",
+                            cache: false,//设置不缓存
+                            data: obj,
+                            success: publishArticleCommentSuccess,
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                closeLoadingModel();
+                                openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                            }
+                        });
+                    }
+                },
+                // closeOnConfirm: false,
+                onCancel: function() {
+                }
+            });
+            var obj = new Object();
+            obj.articleCommentName = articleCommentName;
+            obj.email = articleCommentEmail;
+            $.ajax({
+                url: "/article/comment/email/check_code/send",
+                type: "POST",
+                cache: false,//设置不缓存
+                data: obj,
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("请求出错：" + XMLHttpRequest + textStatus + errorThrown);
+                }
+            });
+        }
+    } else {
+        openAlert("您输入的邮箱格式不正确，您的邮箱信息将不会被其他人看到，该邮箱仅用于对您提出的意见进行探讨");
+    }
+}
+
+function publishArticleCommentSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status = "true") {
+        window.location.reload();
+    } else {
+        closeLoadingModel();
+        openAlert(result.content);
     }
 }
 

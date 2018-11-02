@@ -5,22 +5,27 @@ import com.gxg.dao.ArticleDao;
 import com.gxg.dao.UserDao;
 import com.gxg.entities.Article;
 import com.gxg.entities.ArticleComment;
+import com.gxg.entities.Blog;
 import com.gxg.entities.User;
 import com.gxg.service.ArticleService;
+import com.gxg.service.BlogService;
+import com.gxg.service.MailService;
 import com.gxg.utils.FileUtil;
-import com.zaxxer.hikari.util.SuspendResumeLock;
+import com.gxg.utils.NumberUtil;
+import com.gxg.utils.RegularExpressionUtil;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.multipart.MultipartFile;;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * 提供文章相关的业务处理
@@ -62,6 +67,18 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Value("${article.comment.each.page.number}")
     private int articleCommentEachPageNumber;
+
+    @Autowired
+    Configuration configuration;//这里注入的是freeMarker的configuration
+
+    @Autowired
+    private BlogService blogService;
+
+    @Autowired
+    private MailService mailService;
+
+    @Value("${article.comment.head_img.list}")
+    private String[] articleCommentHeadImgList;
 
     /**
      * 获得最近几次的文章列表
@@ -680,6 +697,148 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             result.accumulate("content", content);
         }
+        return result.toString();
+    }
+
+    /**
+     * 向邮箱发送验证码
+     * @param articleCommentName 评论人昵称
+     * @param email 邮箱
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public String sendEmailCheckCode(String articleCommentName, String email, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "发送验证码失败！";
+        if (email == null || "".equals(email) || email.length() == 0) {
+            content = "邮箱信息为空！";
+        } else if (RegularExpressionUtil.checkEmail(email)) {
+            String articleCommentEmailCheckCode = NumberUtil.makeNumber(6);
+            HttpSession session = request.getSession();
+            session.setAttribute("articleCommentEmailCheckCode", articleCommentEmailCheckCode);
+            Blog blog = blogService.getBlog(request);
+            String fromUserName = "随遇而安。";
+            if (blog != null && blog.getOwnerName() != null && !"".equals(blog.getOwnerName())) {
+                fromUserName = blog.getOwnerName();
+            }
+            String toUserName = "有缘人";
+            if (articleCommentName != null && articleCommentName.length() != 0 && !"".equals(articleCommentName)) {
+                toUserName = articleCommentName;
+            }
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put("time", new Date());
+            model.put("articleCommentEmailCheckCode", articleCommentEmailCheckCode);
+            model.put("toUserName", toUserName);
+            model.put("fromUserName", fromUserName);
+            try {
+                Template t = configuration.getTemplate("email_check_code.ftl");
+                String emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+                JSONObject sendEmailResult = mailService.sendHtmlMail(email, "邮箱验证", emailContent);
+                status = sendEmailResult.getString("status");
+                content = sendEmailResult.getString("content");
+            } catch (Exception e) {
+                System.out.println("发送邮件失败，失败原因：" + e);
+                content = "发送邮件失败！";
+            }
+        } else {
+            content = "邮箱格式不正确！";
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 检查邮箱验证码并发表评论
+     * @param articleId 文章ID
+     * @param articleCommentName 文章评论昵称
+     * @param articleCommentEmail 文章评论邮箱
+     * @param articleCommentComment 文章评论内容
+     * @param articleCommentEmailCheckCode 用户填写的验证码
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String checkEmailCheckCodeAndPublish(String articleId, String articleCommentName, String articleCommentEmail, String articleCommentComment, String articleCommentEmailCheckCode, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "发表评论出错！";
+        if (articleId == null || "".equals(articleId) || articleId.length() == 0) {
+            content = "系统获取文章ID出错！";
+        } else if (articleCommentName == null || "".equals(articleCommentName) || articleCommentName.length() == 0) {
+            content = "请留下您的昵称";
+        } else if (articleCommentEmail == null || "".equals(articleCommentEmail) || articleCommentEmail.length() == 0) {
+            content = "请留下您的邮箱，您的邮箱信息将不会被其他人看到，该邮箱仅用于对您提出的意见进行探讨";
+        } else if (articleCommentComment == null || "".equals(articleCommentComment) || articleCommentComment.length() == 0) {
+            content = "说点什么呗~";
+        } else if (articleCommentEmailCheckCode == null || "".equals(articleCommentEmailCheckCode) || articleCommentEmailCheckCode.length() == 0) {
+            content = "请输入验证码！";
+        } else if (articleCommentName.length() > 20) {
+            content = "昵称长度不能大于20字符";
+        } else if (!RegularExpressionUtil.checkEmail(articleCommentEmail)) {
+            content = "您输入的邮箱格式不正确，您的邮箱信息将不会被其他人看到，该邮箱仅用于对您提出的意见进行探讨";
+        } else if (articleCommentEmail.length() > 50) {
+            content = "邮箱长度不能大于50字符";
+        } else if (articleCommentComment.length() > 300) {
+            content = "评论内容不能超过300字符";
+        } else if (articleDao.getCountById(articleId) == 0) {
+            content = "该文章不存在！";
+        } else if (articleCommentHeadImgList.length == 0) {
+            System.out.println("系统内文章评论头像列表为空，无法分配头像！");
+            content = "系统内文章评论头像列表为空，无法分配头像！";
+        } else {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("articleCommentEmailCheckCode") == null) {
+                content = "验证码信息已失效！";
+            } else {
+                String systemArticleCommentEmailCheckCode = (String)session.getAttribute("articleCommentEmailCheckCode");
+                if (articleCommentEmailCheckCode.equals(systemArticleCommentEmailCheckCode)) {
+                    ArticleComment articleComment = new ArticleComment();
+                    Timestamp time = new Timestamp(System.currentTimeMillis());
+                    String timeString = time.toString();
+                    String id = timeString.split(" ")[0].split("-")[0] + timeString.split(" ")[0].split("-")[1] + timeString.split(" ")[0].split("-")[2] + timeString.split(" ")[1].split(":")[0] + timeString.split(" ")[1].split(":")[1] + timeString.split(" ")[1].split(":")[2].split("\\.")[0] + timeString.split(" ")[1].split(":")[2].split("\\.")[1];//注意，split是按照正则表达式进行分割，.在正则表达式中为特殊字符，需要转义。
+                    while (articleCommentDao.getCountById(id) != 0) {
+                        long idLong = Long.parseLong(id);
+                        Random random = new Random();
+                        idLong += random.nextInt(100);
+                        id = idLong + "";
+                        if (id.length() > 17) {
+                            id = id.substring(0, 17);
+                        }
+                    }
+                    articleComment.setId(id);
+                    articleComment.setComment(articleCommentComment);
+                    articleComment.setName(articleCommentName);
+                    articleComment.setEmail(articleCommentEmail);
+                    articleComment.setArticleId(articleId);
+                    articleComment.setCreateTime(time);
+                    Random random = new Random();
+                    int headImgIndex = random.nextInt(articleCommentHeadImgList.length);
+                    String headImg = articleCommentHeadImgList[headImgIndex];
+                    articleComment.setHeadImg(headImg);
+                    try {
+                        if (articleCommentDao.createArticleComment(articleComment) == 0) {
+                            System.out.println("文章" + articleId + "评论" + id + "添加数据库出错");
+                            content = "添加数据库出错！";
+                        } else {
+                            status = "true";
+                            content = "发表成功！";
+                        }
+                    } catch (Exception e) {
+                        System.out.println("文章" + articleId + "评论" + id + "添加数据库出错，错误原因：" + e);
+                        content = "添加数据库出错！";
+                    }
+                } else {
+                    content = "验证码不正确！";
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
         return result.toString();
     }
 }
