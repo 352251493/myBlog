@@ -147,6 +147,12 @@ public class ArticleController {
         return articleService.checkEmailCheckCodeAndPublish(articleId, articleCommentName, articleCommentEmail, articleCommentComment, articleCommentEmailCheckCode, request);
     }
 
+    @PostMapping(value = "/comment/delete")
+    @ResponseBody
+    public String deleteArticleComment(@RequestParam String articleCommentId, HttpServletRequest request) {
+        return articleService.deleteArticleComment(articleCommentId, request);
+    }
+
     private Model setBaseModel(Model model, HttpServletRequest request) {
         Blog blog = blogService.getBlog(request);
         if (blog != null) {

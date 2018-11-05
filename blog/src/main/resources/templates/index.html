@@ -40,56 +40,136 @@
 <!-- banner start -->
 <div class="am-g am-g-fixed blog-fixed am-u-sm-centered blog-article-margin">
     <div data-am-widget="slider" class="am-slider am-slider-b1" data-am-slider='{&quot;controlNav&quot;:false}' >
-    <ul class="am-slides">
+    <ul class="am-slides" th:if="${broadcastArticleList} == null">
       <li>
-            <img src="/assets/i/b1.jpg">
+            <img src="/assets/i/b1.jpg" height="620" width="1434">
+            <!--<div class="blog-slider-desc am-slider-desc ">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span class="blog-bor">2015/10/9</span>-->
+                    <!--<br><br><br><br><br><br><br>-->
+                <!--</div>-->
+            <!--</div>-->
+      </li>
+      <li>
+            <img src="/assets/i/b2.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+      </li>
+      <li>
+            <img src="/assets/i/b3.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+      </li>
+      <li>
+            <img src="/assets/i/f12.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+      </li>
+        <li>
+            <img src="/assets/i/f13.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+            <!--<div class="blog-text-center blog-slider-con">-->
+            <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+            <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+            <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+            <!--</p>-->
+            <!--<span>2015/10/9</span>-->
+            <!--</div>-->
+            <!--</div>-->
+        </li>
+    </ul>
+    <ul class="am-slides" th:if="${broadcastArticleList} != null">
+        <li th:each="broadcastArticle : ${broadcastArticleList}">
+            <img th:src="${broadcastArticle.imgUrl}" th:if="${broadcastArticle.imgUrl} != null" height="620" width="1434">
+            <img src="/assets/i/b2.jpg" th:if="${broadcastArticle.imgUrl} == null" height="620" width="1434">
             <div class="blog-slider-desc am-slider-desc ">
                 <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
-                    <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
-                    <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
+                    <span>
+                        <a href="/life/" class="blog-color" th:if="${broadcastArticle.label} eq '生活情感'" th:utext="${broadcastArticle.label} + ' &nbsp;'">生活情感 &nbsp;</a>
+                        <a href="/study/" class="blog-color" th:if="${broadcastArticle.label} eq '学习感悟'" th:utext="${broadcastArticle.label} + ' &nbsp;'">学习感悟 &nbsp;</a>
+                        <a class="blog-color" th:if="${broadcastArticle.label} ne '学习感悟' and ${broadcastArticle.label} ne '生活情感'" th:utext="${broadcastArticle.label} + ' &nbsp;'">生活情感 &nbsp;</a>
+                    </span>
+                    <h1 class="blog-h-margin"><a th:href="'/article/details/' + ${broadcastArticle.id}" th:text="${broadcastArticle.title}">----</a></h1>
+                    <p th:text="${broadcastArticle.articleAbstract}">----
                     </p>
-                    <span class="blog-bor">2015/10/9</span>
+                    <span class="blog-bor" th:text="${#strings.substringBefore(broadcastArticle.modificationTime, '.')}">----</span>
                     <br><br><br><br><br><br><br>
                 </div>
             </div>
-      </li>
-      <li>
-            <img src="/assets/i/b2.jpg">
-            <div class="am-slider-desc blog-slider-desc">
-                <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
-                    <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
-                    <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
-                    </p>
-                    <span>2015/10/9</span>
-                </div>
-            </div>
-      </li>
-      <li>
-            <img src="/assets/i/b3.jpg">
-            <div class="am-slider-desc blog-slider-desc">
-                <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
-                    <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
-                    <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
-                    </p>
-                    <span>2015/10/9</span>
-                </div>
-            </div>
-      </li>
-      <li>
-            <img src="/assets/i/b2.jpg">
-            <div class="am-slider-desc blog-slider-desc">
-                <div class="blog-text-center blog-slider-con">
-                    <span><a href="" class="blog-color">生活情感 &nbsp;</a></span>
-                    <h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>
-                    <p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。
-                    </p>
-                    <span>2015/10/9</span>
-                </div>
-            </div>
-      </li>
+        </li>
+        <li th:if="${#lists.size(broadcastArticleList)} le 4">
+            <img src="/assets/i/b2.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </li>
+        <li th:if="${#lists.size(broadcastArticleList)} le 3">
+            <img src="/assets/i/b3.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </li>
+        <li th:if="${#lists.size(broadcastArticleList)} le 2">
+            <img src="/assets/i/b1.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </li>
+        <li th:if="${#lists.size(broadcastArticleList)} le 1">
+            <img src="/assets/i/f12.jpg" height="620" width="1434">
+            <!--<div class="am-slider-desc blog-slider-desc">-->
+                <!--<div class="blog-text-center blog-slider-con">-->
+                    <!--<span><a href="" class="blog-color">生活情感 &nbsp;</a></span>-->
+                    <!--<h1 class="blog-h-margin"><a href="">总在思考一句积极的话</a></h1>-->
+                    <!--<p>那时候刚好下着雨，柏油路面湿冷冷的，还闪烁着青、黄、红颜色的灯火。-->
+                    <!--</p>-->
+                    <!--<span>2015/10/9</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </li>
     </ul>
     </div>
 </div>

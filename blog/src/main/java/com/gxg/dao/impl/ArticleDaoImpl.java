@@ -223,4 +223,19 @@ public class ArticleDaoImpl implements ArticleDao {
         int changeCount = jdbcTemplate.update(sql, article.getId());
         return changeCount;
     }
+
+    /**
+     * 获取按照阅读数量排序的指定范围的文章信息
+     *
+     * @param start  开始位置
+     * @param length 获取个数
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    @Override
+    public List<Article> getArticleByLimitOrderByReadNumber(int start, int length) {
+        String sql = "select * from article order by read_number desc limit ?, ?";
+        List<Article> articleList = jdbcTemplate.query(sql, new ArticleRowMapper(), start, length);
+        return articleList;
+    }
 }

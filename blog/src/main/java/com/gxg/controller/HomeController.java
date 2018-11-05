@@ -55,6 +55,8 @@ public class HomeController {
         model.addAttribute("shortWordsCount", shortWordsCount);
         List<Article> articleList = articleService.getAllArticleLately();
         model.addAttribute("articleList", articleList);
+        List<Article> broadcastArticleList = articleService.getAllArticleHottest();
+        model.addAttribute("broadcastArticleList", broadcastArticleList);
         return "/index.html";
     }
 }

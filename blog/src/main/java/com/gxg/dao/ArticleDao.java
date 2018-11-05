@@ -129,4 +129,13 @@ public interface ArticleDao {
      * @author 郭欣光
      */
     public int deleteArticle(Article article);
+
+    /**
+     * 获取按照阅读数量排序的指定范围的文章信息
+     * @param start 开始位置
+     * @param length 获取个数
+     * @return 文章信息
+     * @author 郭欣光
+     */
+    public List<Article> getArticleByLimitOrderByReadNumber(int start, int length);
 }

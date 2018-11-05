@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 /**
@@ -74,6 +75,20 @@ public class ArticleCommentDaoImpl implements ArticleCommentDao {
     public int createArticleComment(ArticleComment articleComment) {
         String sql = "insert into article_comment(id, head_img, comment, name, email, article_id, create_time) values(?, ?, ?, ?, ?, ?, ?)";
         int changeCount = jdbcTemplate.update(sql, articleComment.getId(), articleComment.getHeadImg(), articleComment.getComment(), articleComment.getName(), articleComment.getEmail(), articleComment.getArticleId(), articleComment.getCreateTime());
+        return changeCount;
+    }
+
+    /**
+     * 删除文章评论
+     *
+     * @param articleCommentId 文章评论ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteArticleComment(String articleCommentId) {
+        String sql = "delete from article_comment where id=?";
+        int changeCount = jdbcTemplate.update(sql, articleCommentId);
         return changeCount;
     }
 }

@@ -182,7 +182,7 @@ function getArticleCommentSuccess(data) {
                     }
                     str += '<span class="blog-color">' + articleComment.createTime.split(".")[0] + '</span>';
                     if (result.isUser == "true") {
-                        str += '<a class="am-btn am-btn-link am-fr" style="color: red" href="javascript:deleteArticleComment("' + articleComment.id + '");"><i class="am-icon-trash am-icon-fw"></i></a>';
+                        str += "<a class=\"am-btn am-btn-link am-fr\" style=\"color: red\" href=\"javascript:deleteArticleComment('" + articleComment.id + "');\"><i class=\"am-icon-trash am-icon-fw\"></i></a>";
                     }
                     str += '</h3>';
                     str += '<p>' + articleComment.comment + '</p>';
@@ -213,7 +213,7 @@ function getArticleCommentSuccess(data) {
                     }
                     str += '<span class="blog-color">' + articleComment.createTime.split(".")[0] + '</span>';
                     if (result.isUser == "true") {
-                        str += '<a class="am-btn am-btn-link am-fr" style="color: red" href="javascript:deleteArticleComment("' + articleComment.id + '");"><i class="am-icon-trash am-icon-fw"></i></a>';
+                        str += "<a class=\"am-btn am-btn-link am-fr\" style=\"color: red\" href=\"javascript:deleteArticleComment('" + articleComment.id + "');\"><i class=\"am-icon-trash am-icon-fw\"></i></a>";
                     }
                     str += '</h3>';
                     str += '<p>' + articleComment.comment + '</p>';
@@ -313,6 +313,41 @@ function getEmailCheckCode() {
 function publishArticleCommentSuccess(data) {
     var result = JSON.parse(data);
     if (result.status = "true") {
+        window.location.reload();
+    } else {
+        closeLoadingModel();
+        openAlert(result.content);
+    }
+}
+
+function deleteArticleComment(articleCommentId) {
+    $('#delete-article-comment-confirm').modal({
+        relatedTarget: this,
+        onConfirm: function(options) {
+            openLoadingModel("正在删除，请稍后...");
+            var obj = new Object();
+            obj.articleCommentId = articleCommentId;
+            $.ajax({
+                url: "/article/comment/delete",
+                type: "POST",
+                cache: false,//设置不缓存
+                data: obj,
+                success: deleteArticleCommentSuccess,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    closeLoadingModel();
+                    openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        },
+        // closeOnConfirm: false,
+        onCancel: function() {
+        }
+    });
+}
+
+function deleteArticleCommentSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
         window.location.reload();
     } else {
         closeLoadingModel();

@@ -80,6 +80,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Value("${article.comment.head_img.list}")
     private String[] articleCommentHeadImgList;
 
+    @Value("${article.all.hottest.number}")
+    private int articleAllHottestNumber;
+
     /**
      * 获得最近几次的文章列表
      *
@@ -840,5 +843,59 @@ public class ArticleServiceImpl implements ArticleService {
         result.accumulate("status", status);
         result.accumulate("content", content);
         return result.toString();
+    }
+
+    /**
+     * 删除评论
+     *
+     * @param articleCommentId 文章评论ID
+     * @param request          用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String deleteArticleComment(String articleCommentId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (articleCommentDao.getCountById(articleCommentId) == 0) {
+            content = "该条评论不存在！";
+        } else {
+            try {
+                if (articleCommentDao.deleteArticleComment(articleCommentId) == 0) {
+                    System.out.println("删除文章评论" + articleCommentId + "时操作数据库失败！");
+                    content = "删除评论时操作数据库失败！";
+                } else {
+                    status = "true";
+                    content = "删除成功！";
+                }
+            } catch (Exception e) {
+                System.out.println("删除文章评论" + articleCommentId + "时操作数据库失败，失败原因：" + e);
+                content = "删除评论时操作数据库失败！";
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 获得最热文章
+     *
+     * @return 最热文章
+     * @author 郭欣光
+     */
+    @Override
+    public List<Article> getAllArticleHottest() {
+        if (articleDao.getCount() == 0) {
+            return null;
+        } else {
+            List<Article> articleList = articleDao.getArticleByLimitOrderByReadNumber(0, articleAllHottestNumber);
+            articleList = this.articleUrlProcess(articleList);
+            return articleList;
+        }
     }
 }

@@ -44,4 +44,12 @@ public interface ArticleCommentDao {
      * @author 郭欣光
      */
     public int createArticleComment(ArticleComment articleComment);
+
+    /**
+     * 删除文章评论
+     * @param articleCommentId 文章评论ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int deleteArticleComment(String articleCommentId);
 }

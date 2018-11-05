@@ -162,4 +162,20 @@ public interface ArticleService {
      * @author 郭欣光
      */
     public String checkEmailCheckCodeAndPublish(String articleId, String articleCommentName, String articleCommentEmail, String articleCommentComment, String articleCommentEmailCheckCode, HttpServletRequest request);
+
+    /**
+     * 删除评论
+     * @param articleCommentId 文章评论ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String deleteArticleComment(String articleCommentId, HttpServletRequest request);
+
+    /**
+     * 获得最热文章
+     * @return 最热文章
+     * @author 郭欣光
+     */
+    public List<Article> getAllArticleHottest();
 }

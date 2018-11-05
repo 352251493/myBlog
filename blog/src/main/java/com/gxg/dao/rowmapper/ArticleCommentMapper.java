@@ -15,7 +15,7 @@ public class ArticleCommentMapper implements RowMapper<ArticleComment> {
     @Override
     public ArticleComment mapRow(ResultSet resultSet, int i) throws SQLException {
         ArticleComment articleComment = new ArticleComment();
-        articleComment.setId(resultSet.getString("article_id"));
+        articleComment.setId(resultSet.getString("id"));
         articleComment.setHeadImg(resultSet.getString("head_img"));
         articleComment.setComment(resultSet.getString("comment"));
         articleComment.setName(resultSet.getString("name"));
