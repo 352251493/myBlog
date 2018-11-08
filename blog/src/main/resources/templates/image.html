@@ -1,0 +1,103 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title th:if="${blog} == null or ${blog.ownerName} == null">随遇而安.的个人博客</title>
+  <title th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName} + '的个人博客'">随遇而安.的个人博客</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
+  <meta name="apple-mobile-web-app-title" th:content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+
+<body id="blog-article-sidebar">
+<!-- header start -->
+<header class="am-g am-g-fixed blog-fixed blog-text-center blog-header" th:include="/html_templates/header.html :: header">
+</header>
+<!-- header end -->
+<hr>
+
+<!-- nav start -->
+<nav class="am-g am-g-fixed blog-fixed blog-nav" th:include="/html_templates/nav.html :: nav"></nav>
+<!-- nav end -->
+<hr>
+<!-- content srart -->
+<div class="am-g am-g-fixed blog-fixed blog-content" style="min-height:35%;">
+    <h1 class="am-text-center" th:if="${imageList} == null and ${user} == null">博主太懒，什么都没有留下哦~</h1>
+    <h1 class="am-text-center" th:if="${imageList} == null and ${user} != null">
+        暂时还没有图片美景哦~<br/>
+        赶快<a href="">点击</a>发几张美图晒晒自己的心情吧~
+    </h1>
+  <figure data-am-widget="figure" class="am am-figure am-figure-default "   data-am-figure="{  pureview: 'true' }" th:if="${imageList} != null">
+      <div id="container">
+          <div th:each="image : ${imageList}"><img th:src="${image.img}"><h3 th:text="${image.title}">--</h3></div>
+          <!--<div><img src="/images/01.jpg"><h3>Agfa</h3></div>-->
+          <!--<div><img src="/images/02.jpg"><h3>Auto</h3></div>-->
+          <!--<div><img src="/images/03.jpg"><h3>Bald eagle</h3></div>-->
+          <!--<div><img src="/images/04.jpg"><h3>Black swan</h3></div>-->
+          <!--<div><img src="/images/05.jpg"><h3>Book shelf</h3></div>-->
+          <!--<div><img src="/images/06.jpg"><h3>Camera</h3></div>-->
+          <!--<div><img src="/images/07.jpg"><h3>Camera</h3></div>-->
+          <!--<div><img src="/images/25.jpg"><h3>Vintage camera</h3></div>-->
+          <!--<div><img src="/images/09.jpg"><h3>Coffee</h3></div>-->
+          <!--<div><img src="/images/10.jpg"><h3>Cookies</h3></div>-->
+          <!--<div><img src="/images/11.jpg"><h3>Cubes</h3></div>-->
+          <!--<div><img src="/images/12.jpg"><h3>DJ</h3></div>-->
+          <!--<div><img src="/images/13.jpg"><h3>Doors</h3></div>-->
+          <!--<div><img src="/images/14.jpg"><h3>Matchbox</h3></div>-->
+          <!--<div><img src="/images/15.jpg"><h3>Freiburg</h3></div>-->
+          <!--<div><img src="/images/16.jpg"><h3>Henna</h3></div>-->
+          <!--<div><img src="/images/17.jpg"><h3>Home office</h3></div>-->
+          <!--<div><img src="/images/18.jpg"><h3>iPad</h3></div>-->
+          <!--<div><img src="/images/19.jpg"><h3>Keyboard</h3></div>-->
+          <!--<div><img src="/images/20.jpg"><h3>Lynx</h3></div>-->
+          <!--<div><img src="/images/21.jpg"><h3>Mac</h3></div>-->
+          <!--<div><img src="/images/22.jpg"><h3>Notebook</h3></div>-->
+          <!--<div><img src="/images/23.jpg"><h3>Thoughts</h3></div>-->
+          <!--<div><img src="/images/24.jpg"><h3>Office</h3></div>-->
+          <!--<div><img src="/images/25.jpg"><h3>Children</h3></div>-->
+          <!--<div><img src="/images/26.jpg"><h3>Portrait</h3></div>-->
+          <!--<div><img src="/images/27.jpg"><h3>Startup</h3></div>-->
+          <!--<div><img src="/images/28.jpg"><h3>Sun</h3></div>-->
+          <!--<div><img src="/images/29.jpg"><h3>The Eiffel Tower</h3></div>-->
+          <!--<div><img src="/images/30.jpg"><h3>Water drops</h3></div>-->
+    </div> 
+  </figure>
+
+</div>
+<!-- content end -->
+<footer class="blog-footer" th:include="/html_templates/footer.html :: footer"></footer>
+<div th:include="/html_templates/login.html :: login"></div>
+<div th:include="/html_templates/alert.html :: alert"></div>
+<div th:include="/html_templates/blog_set.html :: blog-set"></div>
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery.min.js"></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/assets/js/pinto.min.js"></script>
+<script src="/assets/js/img.js"></script>
+<script src="/my/js/util.js"></script>
+</body>
+</html>
