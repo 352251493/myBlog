@@ -6,8 +6,6 @@ import com.gxg.entities.User;
 import com.gxg.service.BlogService;
 import com.gxg.service.ImageService;
 import com.gxg.service.UserService;
-import com.sun.javafx.sg.prism.NGShape;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,5 +71,11 @@ public class ImageController {
         List<Image> imageList = imageService.getImage();
         model.addAttribute("imageList", imageList);
         return "/image_manage.html";
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestParam String imageId, HttpServletRequest request) {
+        return imageService.deleteImage(imageId, request);
     }
 }

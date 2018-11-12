@@ -152,6 +152,55 @@ public class ImageServerImpl implements ImageService {
         return result.toString();
     }
 
+    /**
+     * 删除美景图片
+     *
+     * @param imageId 图片ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String deleteImage(String imageId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或者用户登录信息过期，请刷新页面重新登陆后再次尝试！";
+        } else if (imageId == null || imageId.length() == 0 || "".equals(imageId)) {
+            content = "系统获取图片信息出错！";
+        } else if (imageDao.getCountById(imageId) == 0) {
+            content = "该图片信息不存在！";
+        } else {
+            Image image = imageDao.getImageById(imageId);
+            try {
+                if (imageDao.deleteImage(imageId) != 0) {
+                    status = "true";
+                    content = "删除成功！";
+                } else {
+                    System.out.println("删除图片美景" + imageId + "时，操作数据库失败！");
+                    content = "操作数据库失败！";
+                }
+            } catch (Exception e) {
+                System.out.println("删除图片美景" + imageId + "时，操作数据库失败，失败原因：" + e);
+                content = "操作数据库失败！";
+            }
+            if ("true".equals(status)) {
+                if (image.getImg() != null && !"".equals(image.getImg()) && image.getImg().length() != 0) {
+                    this.baseDirProcess();
+                    JSONObject deleteImageResult = FileUtil.deleteFile(imageDir + image.getImg());
+                    System.out.println("删除图片美景" + imageId + "图片文件" + imageDir + image.getImg() + "结果：" + deleteImageResult.toString());
+                } else {
+                    System.out.println("删除图片美景" + imageId + "图片文件时发现数据库未记录该文件！");
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
     private void baseDirProcess() {
         if (blogBaseDir.lastIndexOf("/") != blogBaseDir.length() - 1) {
             blogBaseDir += "/";

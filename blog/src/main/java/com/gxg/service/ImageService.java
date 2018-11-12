@@ -30,4 +30,13 @@ public interface ImageService {
      * @author 郭欣光
      */
     public String uploadImage(String imageTitle, MultipartFile uploadImage, HttpServletRequest request);
+
+    /**
+     * 删除美景图片
+     * @param imageId 图片ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String deleteImage(String imageId, HttpServletRequest request);
 }

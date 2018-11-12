@@ -1,0 +1,239 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title th:if="${blog} == null or ${blog.ownerName} == null">随遇而安.的个人博客</title>
+  <title th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName} + '的个人博客'">随遇而安.的个人博客</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
+  <meta name="apple-mobile-web-app-title" th:content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+
+<body id="blog-article-sidebar">
+<!-- header start -->
+<header class="am-g am-g-fixed blog-fixed blog-text-center blog-header" th:include="/html_templates/header.html :: header">
+</header>
+<!-- header end -->
+<hr>
+
+<!-- nav start -->
+<nav class="am-g am-g-fixed blog-fixed blog-nav" th:include="/html_templates/nav.html :: nav"></nav>
+<!-- nav end -->
+<hr>
+<!-- content srart -->
+<div class="am-g am-g-fixed blog-fixed blog-content" style="min-height:35%;">
+    <div class="am-u-sm-12" th:if="${timeLine} == null or ${timeLine.get('yearList')} == null">
+        <div class="blog-text-center">
+            <h1 th:if="${user} == null">博主太懒，什么都没有留下哦~</h1>
+            <h1 th:if="${user} != null">
+                暂时还没有文章哦~<br/>
+                赶快<a href="/article/publish">点击</a>写点什么吧！
+            </h1>
+        </div>
+    </div>
+    <div class="am-u-sm-12" th:if="${timeLine} != null and ${timeLine.get('yearList')} != null">
+        <h1 class="blog-text-center">-- 时间轴 --</h1>
+        <div class="timeline-year" th:each="timeLineYear : ${timeLine.get('yearList')}">
+            <h1 th:text="${timeLineYear}">--</h1>
+            <hr>
+            <span th:each="timeLineMonth : ${timeLine.get('monthMap')[timeLineYear + '']}">
+                <ul>
+                    <!--<br>-->
+                    <h3 th:text="${timeLineMonth} + '月'">--</h3>
+                    <hr>
+                    <li th:each="timeLineArticle : ${timeLine.get('articleMap')[timeLineYear + timeLineMonth]}">
+                        <span class="am-u-sm-4 am-u-md-2 timeline-span" th:text="${#strings.substringBefore(timeLineArticle.modificationTime, '.')}">----</span>
+                        <span class="am-u-sm-8 am-u-md-6"><a th:href="'/article/details/' + ${timeLineArticle.id}" th:text="${timeLineArticle.title}">----</a></span>
+                        <span class="am-u-sm-4 am-u-md-2 am-hide-sm-only" th:text="${timeLineArticle.label}">---</span>
+                        <span class="am-u-sm-4 am-u-md-2 am-hide-sm-only" th:text="${timeLineArticle.author}" th:if="${timeLineArticle.author} != null">---</span>
+                        <span class="am-u-sm-4 am-u-md-2 am-hide-sm-only" th:if="${timeLineArticle.author} == null">随遇而安。</span>
+                    </li>
+                    <!--<li>-->
+                        <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">2015/10/10</span>-->
+                        <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">不为无益之事，何以遣有涯之生。</a></span>-->
+                        <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">灯火阑珊</span>-->
+                        <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">LWXYFER</span>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">2015/10/5</span>-->
+                        <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">一想到你，我这张丑脸上就泛起微笑</a></span>-->
+                        <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">凌晨四点钟</span>-->
+                        <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">二师兄</span>-->
+                    <!--</li>-->
+                </ul>
+                <br>
+                <br>
+            </span>
+                <!--<ul>-->
+                <!--<br>-->
+                <!--<h3>9月</h3>-->
+                <!--<hr>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--<br>-->
+                <!--<ul>-->
+                <!--<br>-->
+                <!--<h3>8月</h3>-->
+                <!--<hr>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+        </div>
+        <!--<div class="timeline-year">-->
+            <!--<h1>2014</h1>-->
+            <!--<hr>-->
+                <!--<ul>-->
+                <!--<h3>9月</h3>-->
+                <!--<hr>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">2015/10/18</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">君埋泉下泥销骨，我寄人间雪满头</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">风又起</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">amazeui</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">2015/10/10</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">不为无益之事，何以遣有涯之生。</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">灯火阑珊</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">LWXYFER</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">2015/10/5</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">一想到你，我这张丑脸上就泛起微笑</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">凌晨四点钟</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">二师兄</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--<br>-->
+                <!--<ul>-->
+                <!--<br>-->
+                <!--<h3>8月</h3>-->
+                <!--<hr>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--<br>-->
+                <!--<ul>-->
+                <!--<br>-->
+                <!--<h3>7月</h3>-->
+                <!--<hr>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 timeline-span">时间</span>-->
+                    <!--<span class="am-u-sm-8 am-u-md-6"><a href="#">我的标题</a></span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">分类目录</span>-->
+                    <!--<span class="am-u-sm-4 am-u-md-2 am-hide-sm-only">作者</span>-->
+                <!--</li>-->
+                <!--</ul>-->
+        <!--</div>-->
+
+        <hr>
+        <ul class="am-pagination am-pagination-right">
+            <li th:if="${timeLine.get('preNumber')}  eq 0" class="am-disabled"><a href="#">&laquo; 上一页</a></li>
+            <li th:if="${timeLine.get('preNumber')}  ne 0"><a th:href="'/timeline/page/' + ${timeLine.get('preNumber')}">&laquo; 上一页</a></li>
+            <li class="am-disabled"><a href="#" th:text="${timeLine.get('pageNumber')} + '/' + ${timeLine.get('allPageNumber')}">1/1</a></li>
+            <li th:if="${timeLine.get('nextNumber')} eq 0" class="am-disabled"><a href="#">下一页 &raquo;</a></li>
+            <li th:if="${timeLine.get('nextNumber')} ne 0"><a th:href="'/timeline/page/' + ${timeLine.get('nextNumber')}">下一页 &raquo;</a></li>
+        </ul>
+    </div>
+
+
+</div>
+<!-- content end -->
+
+<footer class="blog-footer" th:include="/html_templates/footer.html :: footer"></footer>
+<div th:include="/html_templates/login.html :: login"></div>
+<div th:include="/html_templates/alert.html :: alert"></div>
+<div th:include="/html_templates/blog_set.html :: blog-set"></div>
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery.min.js"></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/my/js/util.js"></script>
+<!-- <script src="assets/js/app.js"></script> -->
+</body>
+</html>

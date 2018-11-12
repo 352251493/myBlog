@@ -76,4 +76,32 @@ public class ImageDaoImpl implements ImageDao {
         int changeCount = jdbcTemplate.update(sql, image.getId(), image.getTitle(), image.getImg(), image.getUploadTime());
         return changeCount;
     }
+
+    /**
+     * 根据ID获得图片美景信息
+     *
+     * @param id 图片美景ID
+     * @return 图片美景信息
+     * @author 郭欣光
+     */
+    @Override
+    public Image getImageById(String id) {
+        String sql = "select * from image where id=?";
+        Image image = jdbcTemplate.queryForObject(sql, new ImageRowMapper(), id);
+        return image;
+    }
+
+    /**
+     * 删除美景图片信息
+     *
+     * @param id 美景图片ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteImage(String id) {
+        String sql = "delete from image where id=?";
+        int changeCount = jdbcTemplate.update(sql, id);
+        return changeCount;
+    }
 }

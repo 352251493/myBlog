@@ -68,11 +68,12 @@ public class LifeController {
                 System.out.println("访问生活情感page超页时：" + e);
             }
         }
+        model.addAttribute("articleList", articleList);
         model.addAttribute("pageNumber", pageIntNumber);
         int allPageNumber = articleService.getArticleAllPageNumberByLabel("生活情感");
         model.addAttribute("allPageNumber", allPageNumber);
         if (pageIntNumber > 1) {
-            model.addAttribute("prePageNumber", pageIntNumber + 1);
+            model.addAttribute("prePageNumber", pageIntNumber - 1);
         }
         if (pageIntNumber < allPageNumber && pageIntNumber >= 0) {
             model.addAttribute("nextPageNumber", pageIntNumber + 1);

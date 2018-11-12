@@ -42,4 +42,20 @@ public interface ImageDao {
      * @author 郭欣光
      */
     public int createImage(Image image);
+
+    /**
+     * 根据ID获得图片美景信息
+     * @param id 图片美景ID
+     * @return 图片美景信息
+     * @author 郭欣光
+     */
+    public Image getImageById(String id);
+
+    /**
+     * 删除美景图片信息
+     * @param id 美景图片ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int deleteImage(String id);
 }
