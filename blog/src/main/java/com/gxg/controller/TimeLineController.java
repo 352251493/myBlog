@@ -57,11 +57,11 @@ public class TimeLineController {
             pageNumberInt = Integer.parseInt(pageNumber);
         } catch (Exception e) {
             System.out.println("访问时间轴页面的页码不正确：" + e);
-            return "redict:/timeline/";
+            return "redirect:/timeline/";
         }
         JSONObject timeLine = timeLineService.getTimeLine(pageNumber);
         if (timeLine == null && !"1".equals(pageNumber)) {
-            return "redict:/timeline/";
+            return "redirect:/timeline/";
         }
         model.addAttribute("pageName", "时间轴");
         User user = userService.getLoginUser(request);
