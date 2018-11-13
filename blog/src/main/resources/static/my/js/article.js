@@ -133,7 +133,7 @@ function getArticleComment() {
     if (articleId == null || articleId == "" || articleId.length == 0) {
         console.log("获取文章ID出错！");
         if (articleCommentPage > 0) {
-            $("#article-comment-list").append(str);
+            // $("#article-comment-list").append(str);
             $("#load-more-article-comment-button").html("点击加载更多");
             $("#load-more-article-comment-button").removeAttr("disabled");
         }
@@ -151,7 +151,7 @@ function getArticleComment() {
                 console.log("请求出错：" + XMLHttpRequest + textStatus + errorThrown);
                 articleCommentPage = articleCommentPage -1;
                 if (articleCommentPage > 0) {
-                    $("#article-comment-list").append(str);
+                    // $("#article-comment-list").append(str);
                     $("#load-more-article-comment-button").html("点击加载更多");
                     $("#load-more-article-comment-button").removeAttr("disabled");
                 }
@@ -230,7 +230,7 @@ function getArticleCommentSuccess(data) {
         console.log(result.content);
         articleCommentPage = articleCommentPage - 1;
         if (articleCommentPage > 0) {
-            $("#article-comment-list").append(str);
+            // $("#article-comment-list").append(str);
             $("#load-more-article-comment-button").html("点击加载更多");
             $("#load-more-article-comment-button").removeAttr("disabled");
         }

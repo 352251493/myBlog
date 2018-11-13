@@ -27,8 +27,8 @@
                 <li class="" th:if="${pageName} ne '图片美景'"><a href="/image/">图片美景</a></li>
                 <li class="am-active" th:if="${pageName} eq '时间轴'"><a href="/timeline/">时间轴</a></li>
                 <li class="" th:if="${pageName} ne '时间轴'"><a href="/timeline/">时间轴</a></li>
-                <li class="am-active" th:if="${pageName} eq '留言吧'"><a href="lw-timeline.html">留言吧</a></li>
-                <li class="" th:if="${pageName} ne '留言吧'"><a href="lw-timeline.html">留言吧</a></li>
+                <li class="am-active" th:if="${pageName} eq '留言吧'"><a href="/message/">留言吧</a></li>
+                <li class="" th:if="${pageName} ne '留言吧'"><a href="/message/">留言吧</a></li>
             </ul>
             <div class="am-topbar-right am-form-inline">
                 <span id="login-button" th:if="${user} == null">

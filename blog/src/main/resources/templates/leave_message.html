@@ -1,0 +1,144 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title th:if="${blog} == null or ${blog.ownerName} == null">随遇而安.的个人博客</title>
+  <title th:if="${blog} != null and ${blog.ownerName} != null" th:text="${blog.ownerName} + '的个人博客'">随遇而安.的个人博客</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <link rel="icon" type="image/png" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" type="image/png" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="/assets/img/logo-ico.png" th:if="${blog} == null or ${blog.logoIco} == null">
+  <link rel="icon" sizes="192x192" th:href="${blog.logoIco}" th:if="${blog} != null and ${blog.logoIco} != null">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="随遇而安.的个人博客" th:if="${blog} == null or ${blog.ownerName} == null"/>
+  <meta name="apple-mobile-web-app-title" th:content="${blog.ownerName} + '的个人博客'" th:if="${blog} != null and ${blog.ownerName} != null"/>
+  <link rel="apple-touch-icon-precomposed" href="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileImage" content="/assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+  <link rel="stylesheet" href="/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+
+<body id="blog-article-sidebar">
+<!-- header start -->
+<header class="am-g am-g-fixed blog-fixed blog-text-center blog-header" th:include="/html_templates/header.html :: header">
+</header>
+<!-- header end -->
+<hr>
+
+<!-- nav start -->
+<nav class="am-g am-g-fixed blog-fixed blog-nav" th:include="/html_templates/nav.html :: nav"></nav>
+<!-- nav end -->
+<hr>
+<!-- content srart -->
+<div class="am-g am-g-fixed blog-fixed blog-content" style="min-height:35%;">
+    <h3 class="blog-comment">留言</h3>
+    <form class="am-form am-g" onsubmit="getEmailCheckCode(); return false;">
+        <fieldset>
+            <div class="am-form-group am-u-sm-6 blog-clear-left">
+                <input type="text" class="" placeholder="昵称" maxlength="20" id="leave-message-name">
+            </div>
+            <div class="am-form-group am-u-sm-6">
+                <input type="email" class="" placeholder="邮箱" maxlength="50" id="leave-message-email">
+            </div>
+            <div class="am-form-group">
+                <textarea class="" rows="5" placeholder="说点什么吧~" id="leave-message-comment" maxlength="300"></textarea>
+            </div>
+            <p><button type="submit" class="am-btn am-btn-default">发表留言</button></p>
+        </fieldset>
+    </form>
+
+    <h3 class="blog-comment">留言列表</h3>
+    <div id="leave-message-list">
+        <div class="blog-text-center">还没有留言哦~博主好伤心呀，赶快给点鼓励或者提点意见吧！</div>
+
+        <!--<ul class="am-comments-list am-comments-list-flip">-->
+            <!--<li class="am-comment">-->
+                <!--<img src="/assets/i/i1.jpg" alt="" class="am-comment-avatar" width="48" height="48"/>-->
+                <!--<div class="am-comment-main">-->
+                    <!--<header class="am-comment-hd">-->
+                        <!--&lt;!&ndash;<h3 class="am-comment-title">评论标题</h3>&ndash;&gt;-->
+                        <!--<div class="am-comment-meta am-cf">-->
+                            <!--<span class="am-comment-author">某人</span>-->
+                            <!--发表于 <time>2014-7-12 15:30</time>-->
+                            <!--<a class="am-fr">删除</a>-->
+                        <!--</div>-->
+                    <!--</header>-->
+                    <!--<div class="am-comment-bd">-->
+                        <!--陌生人的雨伞打湿校服的衣角，谁的西装传来樟脑球的气味，旁人的体温紧贴在背后，浑浊的空调风扑面而来。-->
+                    <!--</div>-->
+                    <!--<blockquote>Email:guoxinguang123@qq.com</blockquote>-->
+                <!--</div>-->
+            <!--</li>-->
+
+            <!--<li class="am-comment">-->
+                <!--<img src="/assets/i/i1.jpg" alt="" class="am-comment-avatar" width="48" height="48"/>-->
+                <!--<div class="am-comment-main">-->
+                    <!--<header class="am-comment-hd">-->
+                        <!--&lt;!&ndash;<h3 class="am-comment-title">评论标题</h3>&ndash;&gt;-->
+                        <!--<div class="am-comment-meta am-cf">-->
+                            <!--<span class="am-comment-author">某人</span>-->
+                            <!--发表于 <time>2014-7-12 15:30</time>-->
+                            <!--<a class="am-fr">删除</a>-->
+                        <!--</div>-->
+                    <!--</header>-->
+                    <!--<div class="am-comment-bd">-->
+                        <!--陌生人的雨伞打湿校服的衣角，谁的西装传来樟脑球的气味，旁人的体温紧贴在背后，浑浊的空调风扑面而来。-->
+                    <!--</div>-->
+                    <!--<blockquote>Email:guoxinguang123@qq.com</blockquote>-->
+                <!--</div>-->
+            <!--</li>-->
+        <!--</ul>-->
+    </div>
+    <div id="show-load-more-message-button">
+        <!--<button type="button" class="am-btn am-btn-default am-btn-block" id="load-more-message-button">点击加载更多</button>-->
+    </div>
+
+
+</div>
+
+<div class="am-modal am-modal-prompt" tabindex="-1" id="leave-message-email-check-code-model">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">验证信息</div>
+        <div class="am-modal-bd">
+            验证码已发送至您的邮箱，请输入您的验证码（您的邮箱信息将不会被其他人看到，该邮箱仅用于对您提出的意见进行探讨）
+            <p style="color: red; font-size: small;">*由于网络原因可能导致验证码接收延迟，如1分钟后仍未收到验证码，请点击取消后重新点击发表评论按钮</p>
+            <input type="text" class="am-modal-prompt-input" id="leave-message-email-check-code">
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+        </div>
+    </div>
+</div>
+<!-- content end -->
+
+<footer class="blog-footer" th:include="/html_templates/footer.html :: footer"></footer>
+<div th:include="/html_templates/login.html :: login"></div>
+<div th:include="/html_templates/alert.html :: alert"></div>
+<div th:include="/html_templates/blog_set.html :: blog-set"></div>
+<div th:include="/html_templates/loading.html :: loading"></div>
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/assets/js/jquery.min.js"></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<script src="/assets/js/amazeui.min.js"></script>
+<script src="/my/js/util.js"></script>
+<script src="/my/js/loading.js"></script>
+<script src="/my/js/leave_message.js"></script>
+<!-- <script src="assets/js/app.js"></script> -->
+</body>
+</html>
