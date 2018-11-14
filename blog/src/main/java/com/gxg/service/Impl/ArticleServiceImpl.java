@@ -719,9 +719,14 @@ public class ArticleServiceImpl implements ArticleService {
         if (email == null || "".equals(email) || email.length() == 0) {
             content = "邮箱信息为空！";
         } else if (RegularExpressionUtil.checkEmail(email)) {
-            String articleCommentEmailCheckCode = NumberUtil.makeNumber(6);
             HttpSession session = request.getSession();
-            session.setAttribute("articleCommentEmailCheckCode", articleCommentEmailCheckCode);
+            String articleCommentEmailCheckCode = "";
+            if (session.getAttribute("articleCommentEmailCheckCode") == null) {
+                articleCommentEmailCheckCode = NumberUtil.makeNumber(6);
+                session.setAttribute("articleCommentEmailCheckCode", articleCommentEmailCheckCode);
+            } else {
+                articleCommentEmailCheckCode = (String)session.getAttribute("articleCommentEmailCheckCode");
+            }
             Blog blog = blogService.getBlog(request);
             String fromUserName = "随遇而安。";
             if (blog != null && blog.getOwnerName() != null && !"".equals(blog.getOwnerName())) {
@@ -799,6 +804,7 @@ public class ArticleServiceImpl implements ArticleService {
                 content = "验证码信息已失效！";
             } else {
                 String systemArticleCommentEmailCheckCode = (String)session.getAttribute("articleCommentEmailCheckCode");
+                session.setAttribute("articleCommentEmailCheckCode", null);
                 if (articleCommentEmailCheckCode.equals(systemArticleCommentEmailCheckCode)) {
                     ArticleComment articleComment = new ArticleComment();
                     Timestamp time = new Timestamp(System.currentTimeMillis());

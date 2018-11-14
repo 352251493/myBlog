@@ -75,4 +75,18 @@ public class LeaveMessageDaoImpl implements LeaveMessageDao {
         int changeCount = jdbcTemplate.update(sql, leaveMessage.getId(), leaveMessage.getHeadImg(), leaveMessage.getComment(), leaveMessage.getName(), leaveMessage.getEmail(), leaveMessage.getCreateTime());
         return changeCount;
     }
+
+    /**
+     * 删除留言
+     *
+     * @param id 留言ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    @Override
+    public int deleteLeaveMessage(String id) {
+        String sql = "delete from leave_message where id=?";
+        int changeCount = jdbcTemplate.update(sql, id);
+        return changeCount;
+    }
 }

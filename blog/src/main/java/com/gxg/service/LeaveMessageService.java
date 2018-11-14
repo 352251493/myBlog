@@ -39,4 +39,13 @@ public interface LeaveMessageService {
      * @author 郭欣光
      */
     public String checkEmailCheckCodeAndPublish(String leaveMessageName, String leaveMessageEmail, String leaveMessageComment, String leaveMessageEmailCheckCode, HttpServletRequest request);
+
+    /**
+     * 删除留言
+     * @param leaveMessageId 留言ID
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String deleteLeaveMessage(String leaveMessageId, HttpServletRequest request);
 }

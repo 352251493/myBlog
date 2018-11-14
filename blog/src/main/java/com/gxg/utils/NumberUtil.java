@@ -25,7 +25,7 @@ public class NumberUtil {
         Random r = new Random();
         String num = r.nextInt(baseRandom) + "";
         StringBuffer stringBuffer = new StringBuffer();
-        for(int i = 0; i < 4 - num.length(); i++) {
+        for(int i = 0; i < bitNumber - num.length(); i++) {
             stringBuffer.append("0");
         }
         num = stringBuffer.toString() + num;

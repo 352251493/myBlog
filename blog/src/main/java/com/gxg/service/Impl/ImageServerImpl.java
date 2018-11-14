@@ -212,8 +212,7 @@ public class ImageServerImpl implements ImageService {
 
     private Image singleImageDirProcess(Image image) {
         if (imageDir.length() >= blogBaseDir.length() && image.getImg() != null && FileUtil.fileExists(imageDir + image.getImg())) {
-            Random random = new Random();
-            String imgUrl = blogInformationBaseUrl + imageDir.substring(blogBaseDir.length() - 1) + image.getImg() + "?noCache=" + random.nextDouble();
+            String imgUrl = blogInformationBaseUrl + imageDir.substring(blogBaseDir.length() - 1) + image.getImg();
             image.setImg(imgUrl);
         }
         return image;

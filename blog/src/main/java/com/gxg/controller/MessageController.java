@@ -61,4 +61,10 @@ public class MessageController {
     public String checkEmailCheckCodeAndPublish(@RequestParam String leaveMessageName, @RequestParam String leaveMessageEmail, @RequestParam String leaveMessageComment, @RequestParam String leaveMessageEmailCheckCode, HttpServletRequest request) {
         return leaveMessageService.checkEmailCheckCodeAndPublish(leaveMessageName, leaveMessageEmail, leaveMessageComment, leaveMessageEmailCheckCode, request);
     }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String delete(@RequestParam String leaveMessageId, HttpServletRequest request) {
+        return leaveMessageService.deleteLeaveMessage(leaveMessageId, request);
+    }
 }

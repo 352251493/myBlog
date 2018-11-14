@@ -42,4 +42,12 @@ public interface LeaveMessageDao {
      * @author 郭欣光
      */
     public int createLeaveMessage(LeaveMessage leaveMessage);
+
+    /**
+     * 删除留言
+     * @param id 留言ID
+     * @return 数据库改变行数
+     * @author 郭欣光
+     */
+    public int deleteLeaveMessage(String id);
 }

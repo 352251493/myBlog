@@ -79,7 +79,7 @@ function messageListStrProcess(result) {
         str += '<span class="am-comment-author">' + leaveMessage.name + '</span>\n';
         str += '发表于 <time>' + leaveMessage.createTime.split(".")[0] + '</time>\n';
         if (result.isUser == "true") {
-            str += "<a class=\"am-fr\" href=\"\">删除</a>";
+            str += "<a class=\"am-fr\" href=\"javascript:deleteLeaveMessage('" + leaveMessage.id + "');\">删除</a>";
         }
         str += '</div>';
         str += '</header>';
@@ -167,6 +167,41 @@ function getEmailCheckCode() {
 function publishLeaveMessageSuccess(data) {
     var result = JSON.parse(data);
     if (result.status = "true") {
+        window.location.reload();
+    } else {
+        closeLoadingModel();
+        openAlert(result.content);
+    }
+}
+
+function deleteLeaveMessage(leaveMessageId) {
+    $('#delete-leave-message-confirm').modal({
+        relatedTarget: this,
+        onConfirm: function(options) {
+            openLoadingModel("正在删除，请稍后...");
+            var obj = new Object();
+            obj.leaveMessageId = leaveMessageId;
+            $.ajax({
+                url: "/message/delete",
+                type: "POST",
+                cache: false,//设置不缓存
+                data: obj,
+                success: deleteLeaveMessageSuccess,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    closeLoadingModel();
+                    openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        },
+        // closeOnConfirm: false,
+        onCancel: function() {
+        }
+    });
+}
+
+function deleteLeaveMessageSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
         window.location.reload();
     } else {
         closeLoadingModel();

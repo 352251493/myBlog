@@ -116,9 +116,14 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
         if (email == null || "".equals(email) || email.length() == 0) {
             content = "邮箱信息为空！";
         } else if (RegularExpressionUtil.checkEmail(email)) {
-            String leaveMessageEmailCheckCode = NumberUtil.makeNumber(6);
             HttpSession session = request.getSession();
-            session.setAttribute("leaveMessageEmailCheckCode", leaveMessageEmailCheckCode);
+            String leaveMessageEmailCheckCode = "";
+            if (session.getAttribute("leaveMessageEmailCheckCode") == null) {
+                leaveMessageEmailCheckCode = NumberUtil.makeNumber(6);
+                session.setAttribute("leaveMessageEmailCheckCode", leaveMessageEmailCheckCode);
+            } else {
+                leaveMessageEmailCheckCode = (String)session.getAttribute("leaveMessageEmailCheckCode");
+            }
             Blog blog = blogService.getBlog(request);
             String fromUserName = "随遇而安。";
             if (blog != null && blog.getOwnerName() != null && !"".equals(blog.getOwnerName())) {
@@ -192,6 +197,7 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
                 content = "验证码信息已失效！";
             } else {
                 String systemLeaveMessageEmailCheckCode = (String)session.getAttribute("leaveMessageEmailCheckCode");
+                session.setAttribute("leaveMessageEmailCheckCode", null);
                 if (leaveMessageEmailCheckCode.equals(systemLeaveMessageEmailCheckCode)) {
                     LeaveMessage leaveMessage = new LeaveMessage();
                     Timestamp time = new Timestamp(System.currentTimeMillis());
@@ -230,6 +236,43 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
                 } else {
                     content = "验证码不正确！";
                 }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
+
+    /**
+     * 删除留言
+     *
+     * @param leaveMessageId 留言ID
+     * @param request        用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String deleteLeaveMessage(String leaveMessageId, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "删除失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else if (leaveMessageDao.getCountById(leaveMessageId) == 0) {
+            content = "该留言不存在！";
+        } else {
+            try {
+                if (leaveMessageDao.deleteLeaveMessage(leaveMessageId) == 0) {
+                    content = "操作数据库失败！";
+                    System.out.println("删除留言" + leaveMessageId + "时，操作数据库失败！");
+                } else {
+                    status = "true";
+                    content = "删除成功！";
+                }
+            } catch (Exception e) {
+                content = "操作数据库失败！";
+                System.out.println("删除留言" + leaveMessageId + "时，操作数据库失败，失败原因："  + e);
             }
         }
         result.accumulate("status", status);
