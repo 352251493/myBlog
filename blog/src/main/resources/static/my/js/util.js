@@ -280,3 +280,153 @@ function uploadBlogImageFailed(evt) {
     console.log(evt.target.responseText);
     openAlert("上传失败！原因：" + evt.target.responseText);
 }
+
+function openResetPassword() {
+    $('#reset-password-model').modal({
+        relatedTarget: this,
+        onConfirm: function(e) {
+            resetPassword();
+        },
+        onCancel: function(e) {
+        }
+    });
+}
+
+function resetPassword() {
+    var oldPassword = $("#old-password").val();
+    var newPassword = $("#new-password").val();
+    var repeatNewPassword = $("#repeat-new-password").val();
+    if (oldPassword == null || oldPassword == "" || oldPassword.length == 0) {
+        openAlert("原密码不能为空！");
+    } else if (newPassword == null || newPassword == "" || newPassword.length == 0) {
+        openAlert("新密码不能为空！");
+    } else if (repeatNewPassword == newPassword) {
+        var obj = new Object();
+        obj.oldPassword = oldPassword;
+        obj.newPassword = newPassword;
+        obj.repeatNewPassword = repeatNewPassword;
+        $.ajax({
+            url: "/user/password/reset",
+            type: "POST",
+            cache: false,//设置不缓存
+            data: obj,
+            success: resetPasswordSuccess,
+            error: openAjaxErrorAlert
+        });
+    } else {
+        openAjaxErrorAlert("两次密码不一致！");
+    }
+}
+
+function resetPasswordSuccess(data) {
+    var result = JSON.parse(data);
+    if (result.status == "true") {
+        window.location.reload();
+    } else {
+        openAlert(result.content);
+    }
+}
+
+function openAddUserModel() {
+    $('#add-user-model').modal({
+        relatedTarget: this,
+        onConfirm: function(e) {
+            addUser();
+        },
+        onCancel: function(e) {
+        }
+    });
+}
+
+function addUser() {
+    var addUserId = $("#add-user-id").val();
+    var addUserPassword = $("#add-user-password").val();
+    var addUserRepeatPassword = $("#add-user-repeat-password").val();
+    if (addUserId == null || addUserId == "" || addUserId.length == 0) {
+        openAlert("账号不能为空！");
+    } else if (addUserPassword == null || addUserPassword == "" || addUserPassword.length == 0) {
+        openAlert("密码不能为空！");
+    } else if (addUserId.length > 8) {
+        openAlert("账号长度不能超过8个字符！");
+    } else if (addUserPassword == addUserRepeatPassword) {
+        var obj = new Object();
+        obj.addUserId = addUserId;
+        obj.addUserPassword = addUserPassword;
+        obj.addUserRepeatPassword = addUserRepeatPassword;
+        $.ajax({
+            url: "/user/add",
+            type: "POST",
+            cache: false,//设置不缓存
+            data: obj,
+            success: addUserSuccess,
+            error: openAjaxErrorAlert
+        });
+    } else {
+        openAddUserModel("两次密码不一致！");
+    }
+}
+
+function addUserSuccess(data) {
+    var result = JSON.parse(data);
+    openAlert(result.content);
+}
+
+function openManageUserModel() {
+    $('#manage-user-model').modal();
+}
+
+function openDeleteUserModel() {
+    $("#close-manage-user-model").click();
+    openLoadingModel("正在加载，请稍后...");
+    $.ajax({
+        url: "/user/list",
+        type: "GET",
+        cache: false,//设置不缓存
+        success: function (data) {
+            var result = JSON.parse(data);
+            if (result.status == "true") {
+                var str = "";
+                for (var i = 0; i < result.content.length; i++) {
+                    var user = result.content[i];
+                    str += '<option value="' + user.id + '">' + user.id + '</option>';
+                }
+                $("#delete-user-list").html(str);
+                closeLoadingModel();
+                $('#delete-user-model').modal({
+                    relatedTarget: this,
+                    onConfirm: function(e) {
+                        deleteUser();
+                    },
+                    onCancel: function(e) {
+                    }
+                });
+            } else {
+                closeLoadingModel();
+                openAlert(result.content);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            closeLoadingModel();
+            openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+        }
+    });
+}
+
+function deleteUser() {
+    var userId = $("#delete-user-list option:selected").val();
+    var obj = new Object();
+    obj.userId = userId;
+    $.ajax({
+        url: "/user/delete",
+        type: "POST",
+        cache: false,//设置不缓存
+        data: obj,
+        success: deleteUserSuccess,
+        error: openAjaxErrorAlert
+    });
+}
+
+function deleteUserSuccess(data) {
+    var result = JSON.parse(data);
+    openAlert(result.content);
+}

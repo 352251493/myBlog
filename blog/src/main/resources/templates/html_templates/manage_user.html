@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="manage-user">
+    <div class="am-modal am-modal-no-btn" tabindex="-1" id="manage-user-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">编辑管理
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close id="close-manage-user-model">&times;</a>
+            </div>
+            <div class="am-modal-bd">
+                <button type="button" class="am-btn am-btn-default am-round" onclick="openDeleteUserModel();">删除编辑</button>
+                <button type="button" class="am-btn am-btn-default am-round" onclick="openResetUserPasswordModel();">修改编辑密码</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="delete-user-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">删除编辑</div>
+            <div class="am-modal-bd">
+                选择要删除的编辑
+                <select id="delete-user-list" class="am-modal-prompt-input">
+                </select>
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

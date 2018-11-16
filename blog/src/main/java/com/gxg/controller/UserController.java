@@ -4,10 +4,7 @@ import com.gxg.entities.User;
 import com.gxg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,5 +50,29 @@ public class UserController {
         } else {
             return "Get user success!";
         }
+    }
+
+    @PostMapping(value = "/password/reset")
+    @ResponseBody
+    public String resetPassword(@RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String repeatNewPassword, HttpServletRequest request) {
+        return userService.resetPassword(oldPassword, newPassword, repeatNewPassword, request);
+    }
+
+    @PostMapping(value = "/add")
+    @ResponseBody
+    public String addUser(@RequestParam String addUserId, @RequestParam String addUserPassword, @RequestParam String addUserRepeatPassword, HttpServletRequest request) {
+        return userService.addUser(addUserId, addUserPassword, addUserRepeatPassword, request);
+    }
+
+    @GetMapping(value = "/list")
+    @ResponseBody
+    public String getUserList(HttpServletRequest request) {
+        return userService.getUserListByRole("编辑", request);
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public String deleteUser(@RequestParam String userId, HttpServletRequest request) {
+        return userService.deleteUser(userId, request);
     }
 }

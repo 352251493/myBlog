@@ -1,5 +1,7 @@
 package com.gxg.entities;
 
+import org.json.JSONObject;
+
 /**
  * @author 郭欣光
  * @date 2018/10/12 17:10
@@ -32,5 +34,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.accumulate("id", id);
+        jsonObject.accumulate("password", password);
+        jsonObject.accumulate("role", role);
+        return jsonObject.toString();
     }
 }

@@ -78,9 +78,10 @@ public interface ArticleService {
     /**
      * 将文章的阅读数量加一
      * @param article 文章信息
+     * @param request 用户请求信息
      * @author 郭欣光
      */
-    public void addArticleReadCount(Article article);
+    public void addArticleReadCount(Article article, HttpServletRequest request);
 
     /**
      * 根据标签获取最近的文章信息

@@ -77,7 +77,7 @@ public class ArticleController {
             model.addAttribute("preArticle", preArticle);
             Article nextArticle = articleService.getNextArticle(article);
             model.addAttribute("nextArticle", nextArticle);
-            articleService.addArticleReadCount(article);
+            articleService.addArticleReadCount(article, request);
             List<Article> latelyArticleList = articleService.getLastlyArticleByLabel(article.getLabel());
             model.addAttribute("latelyArticleList", latelyArticleList);
             List<Article> hottestArticleList = articleService.getHottestArticleByLabel(article.getLabel());

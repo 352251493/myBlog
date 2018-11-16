@@ -37,4 +37,44 @@ public interface UserService {
      * @author 郭欣光
      */
     public String signOut(HttpServletRequest request);
+
+    /**
+     * 修改密码
+     * @param oldPassword 原密码
+     * @param newPassword 新密码
+     * @param repeatNewPassword 重复密码
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String resetPassword(String oldPassword, String newPassword, String repeatNewPassword, HttpServletRequest request);
+
+    /**
+     * 添加用户
+     * @param addUserId 用户账号
+     * @param addUserPassword 密码
+     * @param addUserRepeatPassword 重复密码
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String addUser(String addUserId, String addUserPassword, String addUserRepeatPassword, HttpServletRequest request);
+
+    /**
+     * 根据角色获取用户列表
+     * @param role 角色
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String getUserListByRole(String role, HttpServletRequest request);
+
+    /**
+     * 删除用户信息
+     * @param userId 用户账号
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String deleteUser(String userId, HttpServletRequest request);
 }

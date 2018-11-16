@@ -39,8 +39,11 @@
                     <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;" id="username" th:utext="${user.id} + '<span class=\'am-icon-caret-down\'></span>'">
                     </a>
                     <ul class="am-dropdown-content" id="my-optional-operation">
+                        <li th:if="${user.role} eq '管理员'"><a href="javascript:openAddUserModel();">添加编辑</a></li>
+                        <li th:if="${user.role} eq '管理员'"><a href="javascript:openManageUserModel();">管理编辑</a></li>
                         <li><a href="/article/publish">发表文章</a></li>
                         <li><a href="javascript:openBlogSetModel();">博客设置</a></li>
+                        <li><a href="javascript:openResetPassword();">修改密码</a></li>
                         <li><a href="javascript:signOut();">退出</a></li>
                     </ul>
                 </li>

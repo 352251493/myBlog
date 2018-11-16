@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="add-user">
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="add-user-model">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd"><h1>添加编辑用户</h1></div>
+            <div class="am-modal-bd">
+                <br/>
+                <form class="am-form am-form-horizontal">
+                    <div class="am-form-group">
+                        <label for="add-user-id" class="am-u-sm-4 am-form-label">账号</label>
+                        <div class="am-u-sm-8">
+                            <input type="text" id="add-user-id" placeholder="请输入账号" maxlength="8">
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label for="add-user-password" class="am-u-sm-4 am-form-label">密码</label>
+                        <div class="am-u-sm-8">
+                            <input type="password" id="add-user-password" placeholder="请输入密码" maxlength="15">
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label for="add-user-repeat-password" class="am-u-sm-4 am-form-label">重复密码</label>
+                        <div class="am-u-sm-8">
+                            <input type="password" id="add-user-repeat-password" placeholder="重复密码" maxlength="15">
+                        </div>
+                    </div>
+                </form>
+                <br/>
+            </div>
+            <div class="am-modal-footer">
+                <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                <span class="am-modal-btn" data-am-modal-confirm>确认</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

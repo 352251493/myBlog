@@ -373,21 +373,26 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 将文章的阅读数量加一
-     *
      * @param article 文章信息
+     * @param request 用户请求信息
      * @author 郭欣光
      */
     @Override
-    public synchronized void addArticleReadCount(Article article) {
+    public synchronized void addArticleReadCount(Article article, HttpServletRequest request) {
         if (article != null && articleDao.getCountById(article.getId()) != 0) {
-            article = articleDao.getArticleById(article.getId());
-            article.setReadNumber(article.getReadNumber() + 1);
-            try {
-                if (articleDao.updateArticle(article) == 0) {
-                    System.out.println("文章：" + article.getId() + "增加阅读量时数据库出错！");
+            HttpSession session = request.getSession();
+            if (session.getAttribute(article.getId()) == null) {
+                article = articleDao.getArticleById(article.getId());
+                article.setReadNumber(article.getReadNumber() + 1);
+                try {
+                    if (articleDao.updateArticle(article) == 0) {
+                        System.out.println("文章：" + article.getId() + "增加阅读量时数据库出错！");
+                    } else {
+                        session.setAttribute(article.getId(), "1");
+                    }
+                } catch (Exception e) {
+                    System.out.println("文章：" + article.getId() + "增加阅读量时数据库出错！错误信息：" + e);
                 }
-            } catch (Exception e) {
-                System.out.println("文章：" + article.getId() + "增加阅读量时数据库出错！错误信息：" + e);
             }
         }
     }
