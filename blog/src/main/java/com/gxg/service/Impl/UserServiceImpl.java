@@ -302,4 +302,53 @@ public class UserServiceImpl implements UserService {
         result.accumulate("content", content);
         return result.toString();
     }
+
+    /**
+     * 管理员修改用户密码
+     *
+     * @param userId   用户账号
+     * @param password 密码
+     * @param request  用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    @Override
+    public synchronized String editUserPassword(String userId, String password, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String status = "false";
+        String content = "修改失败！";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            content = "用户未登录，或登录过期，请刷新页面重新登陆后再次尝试！";
+        } else {
+            User user = (User)session.getAttribute("user");
+            if (!"管理员".equals(user.getRole())) {
+                content = "只有管理员才可以删除用户！";
+            } else if (password == null || "".equals(password) || password.length() == 0) {
+                content = "请输入新密码！";
+            } else if (password.length() > 15) {
+                content = "密码长度不能超过15字符！";
+            } else if (userDao.getCountById(userId) == 0) {
+                content = "该用户不存在，请确认！";
+            } else {
+                User editUser = userDao.getUserById(userId);
+                editUser.setPassword(Md5.md5(password));
+                try {
+                    if (userDao.updateUser(editUser) == 0) {
+                        content = "操作数据库出错！";
+                        System.out.println("修改用户" + userId + "密码" + password + "时，操作数据库出错！");
+                    } else {
+                        status = "true";
+                        content = "修改成功！";
+                    }
+                } catch (Exception e) {
+                    content = "操作数据库出错！";
+                    System.out.println("修改用户" + userId + "密码" + password + "时，操作数据库出错，错误原因：" + e);
+                }
+            }
+        }
+        result.accumulate("status", status);
+        result.accumulate("content", content);
+        return result.toString();
+    }
 }

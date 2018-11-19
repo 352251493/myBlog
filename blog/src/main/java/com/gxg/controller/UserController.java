@@ -75,4 +75,10 @@ public class UserController {
     public String deleteUser(@RequestParam String userId, HttpServletRequest request) {
         return userService.deleteUser(userId, request);
     }
+
+    @PostMapping(value = "/edit/password")
+    @ResponseBody
+    public String editUserPassword(@RequestParam String userId, @RequestParam String password, HttpServletRequest request) {
+        return userService.editUserPassword(userId, password, request);
+    }
 }

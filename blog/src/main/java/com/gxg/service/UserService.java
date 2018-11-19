@@ -77,4 +77,14 @@ public interface UserService {
      * @author 郭欣光
      */
     public String deleteUser(String userId, HttpServletRequest request);
+
+    /**
+     * 管理员修改用户密码
+     * @param userId 用户账号
+     * @param password 密码
+     * @param request 用户请求信息
+     * @return 处理结果
+     * @author 郭欣光
+     */
+    public String editUserPassword(String userId, String password, HttpServletRequest request);
 }

@@ -430,3 +430,67 @@ function deleteUserSuccess(data) {
     var result = JSON.parse(data);
     openAlert(result.content);
 }
+
+function openResetUserPasswordModel() {
+    $("#close-manage-user-model").click();
+    openLoadingModel("正在加载，请稍后...");
+    $.ajax({
+        url: "/user/list",
+        type: "GET",
+        cache: false,//设置不缓存
+        success: function (data) {
+            var result = JSON.parse(data);
+            if (result.status == "true") {
+                var str = "";
+                for (var i = 0; i < result.content.length; i++) {
+                    var user = result.content[i];
+                    str += '<option value="' + user.id + '">' + user.id + '</option>';
+                }
+                $("#edit-user-password-list").html(str);
+                closeLoadingModel();
+                $('#edit-user-password-model').modal({
+                    relatedTarget: this,
+                    onConfirm: function(e) {
+                        resetUserPassword();
+                    },
+                    onCancel: function(e) {
+                    }
+                });
+            } else {
+                closeLoadingModel();
+                openAlert(result.content);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            closeLoadingModel();
+            openAjaxErrorAlert(XMLHttpRequest, textStatus, errorThrown);
+        }
+    });
+}
+
+function resetUserPassword() {
+    var userId = $("#edit-user-password-list option:selected").val();
+    var password = $("#edit-user-password").val();
+    if (password == null || password == "" || password.length == 0) {
+        openAlert("请输入新密码！");
+    } else if (password.length > 15) {
+        openAlert("密码长度不能超过15字符！");
+    } else {
+        var obj = new Object();
+        obj.userId = userId;
+        obj.password = password;
+        $.ajax({
+            url: "/user/edit/password",
+            type: "POST",
+            cache: false,//设置不缓存
+            data: obj,
+            success: resetUserPasswordSuccess,
+            error: openAjaxErrorAlert
+        });
+    }
+}
+
+function resetUserPasswordSuccess(data) {
+    var result = JSON.parse(data);
+    openAlert(result.content);
+}
